@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}— Chat with {{ other.name }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:680px; margin:auto;">
+
+    <div style="display:flex; justify-content:space-between;
+                align-items:center; margin-bottom:1rem;">
+        <h2>💬 {{ other.name }}</h2>
+        <a href="{{ url_for('messages.inbox') }}" style="color:#777;">
+            ← Back to Messages
+        </a>
+    </div>
+
+    <hr style="margin-bottom:1rem;">
+
+    <!-- Message Thread -->
+    <div style="height:400px; overflow-y:auto; padding:0.5rem;
+                margin-bottom:1rem; border:1px solid #eee; border-radius:8px;">
+
+        {% if all_messages %}
+        {% for msg in all_messages %}
+        <div style="display:flex; margin-bottom:0.8rem;">
+
+            {% if msg.sender_id == current_user.user_id %}
+                <div style="margin-left:auto; max-width:70%; padding:0.6rem 1rem;
+                            border-radius:12px; background:#1abc9c; color:white;">
+            {% else %}
+                <div style="margin-right:auto; max-width:70%; padding:0.6rem 1rem;
+                            border-radius:12px; background:#f0f0f0; color:#333;">
+            {% endif %}
+                    <p style="margin:0; font-size:0.95rem;">{{ msg.content }}</p>
+                    <p style="margin:0.3rem 0 0; font-size:0.7rem; opacity:0.7;">
+                        {{ msg.timestamp.strftime('%I:%M %p') }}
+                    </p>
+                </div>
+
+        </div>
+        {% endfor %}
+        {% else %}
+            <div style="text-align:center; padding:2rem; color:#aaa;">
+                No messages yet. Start the conversation! 👋
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Message Input -->
+    <form method="POST" style="display:flex; gap:0.5rem;">
+        <input type="text" name="content"
+               placeholder="Type a message..."
+               style="flex:1; margin:0;"
+               required>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}— Inbox{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:1.5rem;">📬 Inbox</h2>
+
+<!-- Received Requests -->
+<div class="card" style="margin-bottom:1.5rem;">
+    <h3 style="margin-bottom:1rem;">📥 Received Requests</h3>
+
+    {% if received %}
+        {% for req in received %}
+        <div style="border:1px solid #eee; border-radius:8px; padding:1rem;
+                    margin-bottom:0.8rem; display:flex;
+                    justify-content:space-between; align-items:center;">
+            <div>
+                <b>{{ req.sender.name }}</b>
+                <span style="color:#777; font-size:0.85rem; margin-left:0.5rem;">
+                    wants to swap
+                    <span style="color:#1abc9c;">{{ req.offered_skill.skill_name }}</span>
+                    for
+                    <span style="color:#e67e22;">{{ req.requested_skill.skill_name }}</span>
+                </span>
+                <br>
+                <span style="font-size:0.8rem; color:#aaa;">
+                    {{ req.created_at.strftime('%b %d, %Y') }}
+                </span>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+            <span class="badge-{{ req.status }}"
+                style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.8rem;">
+                {{ req.status }}
+            </span>
+
+                <a href="{{ url_for('requests_bp.request_detail', request_id=req.request_id) }}"
+                   class="btn btn-primary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">
+                   View
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color:#aaa;">No requests received yet.</p>
+    {% endif %}
+</div>
+
+<!-- Sent Requests -->
+<div class="card">
+    <h3 style="margin-bottom:1rem;">📤 Sent Requests</h3>
+
+    {% if sent %}
+        {% for req in sent %}
+        <div style="border:1px solid #eee; border-radius:8px; padding:1rem;
+                    margin-bottom:0.8rem; display:flex;
+                    justify-content:space-between; align-items:center;">
+            <div>
+                <b>{{ req.receiver.name }}</b>
+                <span style="color:#777; font-size:0.85rem; margin-left:0.5rem;">
+                    offering
+                    <span style="color:#1abc9c;">{{ req.offered_skill.skill_name }}</span>
+                    for
+                    <span style="color:#e67e22;">{{ req.requested_skill.skill_name }}</span>
+                </span>
+                <br>
+                <span style="font-size:0.8rem; color:#aaa;">
+                    {{ req.created_at.strftime('%b %d, %Y') }}</span>
+            </div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+            <span class="badge-{{ req.status }}"
+                style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.8rem;">
+                {{ req.status }}
+            </span>
+                <a href="{{ url_for('requests_bp.request_detail', request_id=req.request_id) }}"
+                   class="btn btn-primary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">
+                   View
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color:#aaa;">No requests sent yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

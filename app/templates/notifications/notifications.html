@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}— Notifications{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+    <h2>🔔 Notifications</h2>
+</div>
+
+{% if notifications %}
+    {% for n in notifications %}
+
+    {% if n.is_read %}
+        <div class="card" style="margin-bottom:0.8rem;">
+    {% else %}
+        <div class="card notif-unread" style="margin-bottom:0.8rem;">
+    {% endif %}
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <span style="font-size:1.2rem; margin-right:0.5rem;">
+                    {% if n.type == 'new_request' %}📨
+                    {% elif n.type == 'accepted' %}✅
+                    {% elif n.type == 'rejected' %}❌
+                    {% else %}🔔
+                    {% endif %}
+                </span>
+
+                {% if n.is_read %}
+                    <span>{{ n.message }}</span>
+                {% else %}
+                    <span class="notif-unread-text">{{ n.message }}</span>
+                {% endif %}
+
+                <br>
+                <span style="font-size:0.8rem; color:#aaa; margin-left:1.8rem;">
+                    {{ n.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                </span>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+                {% if not n.is_read %}
+                    <span style="background:#e8f8f1; color:#1e8449;
+                                 padding:0.2rem 0.6rem; border-radius:20px;
+                                 font-size:0.75rem;">new</span>
+                {% endif %}
+                {% if n.request_id %}
+                    <a href="{{ url_for('notifications.mark_read', notification_id=n.notification_id) }}"
+                       class="btn btn-primary"
+                       style="font-size:0.8rem; padding:0.3rem 0.8rem;">
+                       View
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+{% else %}
+    <div class="card" style="text-align:center; padding:3rem;">
+        <h3 style="color:#aaa;">No notifications yet 🔔</h3>
+        <p style="color:#bbb; margin:1rem 0;">
+            You'll be notified when someone sends, accepts,
+            or declines a skill exchange request.
+        </p>
+        <a href="{{ url_for('matching.discover') }}" class="btn btn-primary">
+            Find a Match
+        </a>
+    </div>
+{% endif %}
+
+{% endblock %}

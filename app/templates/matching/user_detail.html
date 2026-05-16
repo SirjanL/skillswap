@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}— {{ user.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+
+    <!-- Header -->
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+            <h2>{{ user.name }}</h2>
+            <p style="color:#777; margin:0.3rem 0;">📍 {{ user.location or 'Location not set' }}</p>
+            <p style="margin-top:0.8rem;">{{ user.bio or 'No bio yet.' }}</p>
+        </div>
+        <a href="{{ url_for('matching.discover') }}" style="color:#777;">← Back to Discover</a>
+    </div>
+
+    <hr style="margin:1.5rem 0;">
+
+    <!-- Match Info Banner (only shown if mutual match) -->
+    {% if match_info %}
+    <div style="background:#e8f8f1; border:1px solid #1abc9c; border-radius:8px;
+                padding:1rem 1.5rem; margin-bottom:1.5rem;">
+        <h4 style="color:#1abc9c; margin-bottom:0.8rem;">
+            You're a match! ({{ match_info.score }} match points)
+        </h4>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div>
+                <p style="font-size:0.85rem; font-weight:bold; color:#1e8449;">They can teach you:</p>
+                {% for skill in match_info.they_can_teach_me %}
+                    <span style="background:white; color:#1e8449; padding:0.2rem 0.6rem;
+                                 border-radius:20px; font-size:0.85rem; margin-right:0.3rem;">
+                        {{ skill.skill_name }}
+                    </span>
+                {% endfor %}
+            </div>
+            <div>
+                <p style="font-size:0.85rem; font-weight:bold; color:#e67e22;">You can teach them:</p>
+                {% for skill in match_info.i_can_teach_them %}
+                    <span style="background:white; color:#e67e22; padding:0.2rem 0.6rem;
+                                 border-radius:20px; font-size:0.85rem; margin-right:0.3rem;">
+                        {{ skill.skill_name }}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Send Request Button (placeholder for Phase 6) -->
+        <div style="margin-top:1rem;">
+            <a href="{{ url_for('requests_bp.send_request', receiver_id=user.user_id) }}"
+                    class="btn btn-primary">
+                    📨 Send Skill Exchange Request
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Their Full Skill List -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
+        <div>
+            <h3 style="color:#1abc9c; margin-bottom:1rem;">Skills They Offer</h3>
+            {% if offered_skills %}
+                {% for us in offered_skills %}
+                <div style="background:#f0fdf8; padding:0.6rem 1rem;
+                            border-radius:5px; margin-bottom:0.5rem;">
+                    <b>{{ us.skill.skill_name }}</b>
+                    <span style="color:#777; font-size:0.85rem;"> — {{ us.level }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color:#aaa;">No skills listed.</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <h3 style="color:#e67e22; margin-bottom:1rem;">Skills They Want</h3>
+            {% if wanted_skills %}
+                {% for us in wanted_skills %}
+                <div style="background:#fdf6ec; padding:0.6rem 1rem;
+                            border-radius:5px; margin-bottom:0.5rem;">
+                    <b>{{ us.skill.skill_name }}</b>
+                    <span style="color:#777; font-size:0.85rem;"> — {{ us.level }}</span>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color:#aaa;">No skills listed.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

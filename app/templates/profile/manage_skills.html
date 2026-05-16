@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}— Manage Skills{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 680px; margin: auto;">
+    <h2 style="margin-bottom:1.5rem;">Manage Your Skills</h2>
+
+    <!-- Add Skill Form -->
+    <form method="POST" style="background:#f9f9f9; padding:1.5rem; border-radius:8px; margin-bottom:2rem;">
+        <h3 style="margin-bottom:1rem;">➕ Add a Skill</h3>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div>
+                <label>Skill Name</label>
+                <input type="text" name="skill_name" required placeholder="e.g. Python, Guitar, Cooking">
+            </div>
+            <div>
+                <label>Category</label>
+                <input type="text" name="category" placeholder="e.g. Programming, Music, Arts">
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div>
+                <label>Type</label>
+                <select name="skill_type">
+                    <option value="offer">I can Offer this skill</option>
+                    <option value="want">I want to Learn this skill</option>
+                </select>
+            </div>
+            <div>
+                <label>Level</label>
+                <select name="level">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Skill</button>
+    </form>
+
+    <!-- Current Skills -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
+
+        <div>
+            <h3 style="color:#1abc9c; margin-bottom:1rem;">Skills I Offer</h3>
+            {% if offered_skills %}
+                {% for us in offered_skills %}
+                <div style="background:#f0fdf8; padding:0.6rem 1rem; border-radius:5px; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>{{ us.skill.skill_name }}</b>
+                        <span style="color:#777; font-size:0.85rem;"> — {{ us.level }}</span>
+                    </div>
+                    <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
+                       style="color:#e74c3c; font-size:0.85rem;"
+                       onclick="return confirm('Remove this skill?')">Remove</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color:#aaa;">None added yet.</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <h3 style="color:#e67e22; margin-bottom:1rem;">Skills I Want</h3>
+            {% if wanted_skills %}
+                {% for us in wanted_skills %}
+                <div style="background:#fdf6ec; padding:0.6rem 1rem; border-radius:5px; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <b>{{ us.skill.skill_name }}</b>
+                        <span style="color:#777; font-size:0.85rem;"> — {{ us.level }}</span>
+                    </div>
+                    <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
+                       style="color:#e74c3c; font-size:0.85rem;"
+                       onclick="return confirm('Remove this skill?')">Remove</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color:#aaa;">None added yet.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <div style="margin-top:1.5rem;">
+        <a href="{{ url_for('profile.view_profile') }}" class="btn btn-primary">← Back to Profile</a>
+    </div>
+</div>
+{% endblock %}

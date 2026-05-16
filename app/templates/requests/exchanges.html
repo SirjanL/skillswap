@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}— My Exchanges{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:1.5rem;">🤝 My Exchanges</h2>
+
+{% if exchanges %}
+    {% for req in exchanges %}
+    {% set other = req.receiver if req.sender_id == current_user.user_id else req.sender %}
+    <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h3>{{ other.name }}</h3>
+                <p style="color:#777; font-size:0.9rem; margin-top:0.3rem;">
+                    <span style="color:#1abc9c;">{{ req.offered_skill.skill_name }}</span>
+                    &nbsp;↔&nbsp;
+                    <span style="color:#e67e22;">{{ req.requested_skill.skill_name }}</span>
+                </p>
+                <p style="font-size:0.8rem; color:#aaa; margin-top:0.3rem;">
+                    Started: {{ req.exchange.start_date.strftime('%B %d, %Y') }}
+                </p>
+            </div>
+
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+                <span style="background:#e8f8f1; color:#1e8449;
+                             padding:0.2rem 0.8rem; border-radius:20px; font-size:0.8rem;">
+                    {{ req.exchange.status }}
+                </span>
+
+                {% if req.exchange.status == 'active' %}
+                    <a href="{{ url_for('messages.conversation', exchange_id=req.exchange.exchange_id) }}"
+                       class="btn btn-primary"
+                       style="font-size:0.85rem; padding:0.4rem 0.8rem;">
+                       💬 Message
+                    </a>
+                    <a href="{{ url_for('requests_bp.complete_exchange', exchange_id=req.exchange.exchange_id) }}"
+                       class="btn btn-primary"
+                       style="font-size:0.85rem; padding:0.4rem 0.8rem;"
+                       onclick="return confirm('Mark this exchange as completed?')">
+                       ✅ Mark Complete
+                    </a>
+
+                {% elif req.exchange.status == 'completed' %}
+                    <a href="{{ url_for('ratings.rate', exchange_id=req.exchange.exchange_id) }}"
+                       class="btn btn-primary"
+                       style="font-size:0.85rem; padding:0.4rem 0.8rem;">
+                       ⭐ Rate
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% else %}
+    <div class="card" style="text-align:center; padding:3rem;">
+        <h3 style="color:#aaa;">No active exchanges yet.</h3>
+        <p style="color:#bbb; margin:1rem 0;">
+            Accept a request or get one accepted to start an exchange.
+        </p>
+        <a href="{{ url_for('matching.discover') }}" class="btn btn-primary">
+            Find a Match
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

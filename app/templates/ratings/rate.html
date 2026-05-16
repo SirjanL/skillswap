@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}— Rate {{ rated_user.name }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:520px; margin:auto;">
+    <h2 style="margin-bottom:0.5rem;">⭐ Rate Your Exchange</h2>
+    <p style="color:#777; margin-bottom:1.5rem;">
+        with <b>{{ rated_user.name }}</b>
+    </p>
+
+    <form method="POST">
+
+        <label>Rating</label>
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            {% for i in range(1, 6) %}
+            <label style="cursor:pointer; text-align:center;">
+                <input type="radio" name="rating" value="{{ i }}"
+                       style="display:block; margin: 0 auto 0.2rem;"
+                       required>
+                {{ '⭐' * i }}
+            </label>
+            {% endfor %}
+        </div>
+
+        <label>Feedback
+            <span style="color:#aaa; font-weight:normal;">(optional)</span>
+        </label>
+        <textarea name="feedback" rows="4"
+            placeholder="Share your experience with this exchange..."></textarea>
+
+        <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+            <button type="submit" class="btn btn-primary">
+                Submit Rating
+            </button>
+            <a href="{{ url_for('requests_bp.exchanges') }}"
+               style="color:#777; padding:0.6rem 0;">
+               Skip
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

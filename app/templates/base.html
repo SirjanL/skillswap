@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap {% block title %}{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+
+        nav {
+            background: #2c3e50; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        nav a { color: white; text-decoration: none; margin-left: 1rem; }
+        nav .brand { font-size: 1.3rem; font-weight: bold; color: #1abc9c; }
+
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+
+        .card {
+            background: white; padding: 2rem;
+            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            padding: 0.6rem 1.4rem; border: none; border-radius: 5px;
+            cursor: pointer; font-size: 1rem; text-decoration: none; display: inline-block;
+        }
+        .btn-primary { background: #1abc9c; color: white; }
+        .btn-danger  { background: #e74c3c; color: white; }
+
+        input, textarea, select {
+            width: 100%; padding: 0.6rem; margin: 0.4rem 0 1rem 0;
+            border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
+        }
+        label { font-weight: bold; font-size: 0.9rem; }
+
+        .alert {
+            padding: 0.8rem 1rem; border-radius: 5px; margin-bottom: 1rem;
+        }
+        .alert-error   { background: #fde8e8; color: #c0392b; border: 1px solid #e74c3c; }
+        .alert-success { background: #e8f8f1; color: #1e8449; border: 1px solid #1abc9c; }
+        .badge-pending  { background:#fff3cd; color:#856404; }
+        .badge-accepted { background:#e8f8f1; color:#1e8449; }
+        .badge-rejected { background:#fde8e8; color:#c0392b; }
+        .notif-unread      { border-left: 4px solid #1abc9c; }
+        .notif-unread-text { font-weight: bold; }
+    </style>
+</head>
+<body>
+
+nav>
+    <span class="brand">🔄 SkillSwap</span>
+    <div>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
+    <a href="{{ url_for('requests_bp.inbox') }}">📬 Inbox</a>
+    <a href="{{ url_for('requests_bp.exchanges') }}">🤝 Exchanges</a>
+    <a href="{{ url_for('notifications.view_notifications') }}" style="position:relative;">
+        🔔 Alerts
+        {% if unread_count > 0 %}
+        <span style="
+            background:#e74c3c; color:white; border-radius:50%;
+            padding:0.1rem 0.4rem; font-size:0.7rem;
+            position:absolute; top:-6px; right:-10px;">
+            {{ unread_count }}
+        </span>
+        {% endif %}
+    </a>
+    <a href="{{ url_for('profile.view_profile') }}">👤 {{ current_user.name }}</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+    {% else %}
+    <a href="{{ url_for('auth.login') }}">Login</a>
+    <a href="{{ url_for('auth.register') }}">Register</a>
+    {% endif %}
+    </div>
+</nav>
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+
+{% if current_user.is_authenticated %}
+    <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
+    <a href="{{ url_for('profile.view_profile') }}">👤 {{ current_user.name }}</a>
+    <a href="{{ url_for('profile.manage_skills') }}">My Skills</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+{% else %}
+    <a href="{{ url_for('auth.login') }}">Login</a>
+    <a href="{{ url_for('auth.register') }}">Register</a>
+{% endif %}
+
+{% if current_user.is_authenticated %}
+    <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
+    <a href="{{ url_for('requests_bp.inbox') }}">📬 Inbox</a>
+    <a href="{{ url_for('requests_bp.exchanges') }}">🤝 Exchanges</a>
+    <a href="{{ url_for('messages.inbox') }}">💬 Messages</a>
+    <a href="{{ url_for('notifications.view_notifications') }}" style="position:relative;">
+        🔔 Alerts
+        {% if unread_count > 0 %}
+        <span style="background:#e74c3c; color:white; border-radius:50%;
+                     padding:0.1rem 0.4rem; font-size:0.7rem;
+                     position:absolute; top:-6px; right:-10px;">
+            {{ unread_count }}
+        </span>
+        {% endif %}
+    </a>
+    <a href="{{ url_for('profile.view_profile') }}">👤 {{ current_user.name }}</a>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+{% else %}
+    <a href="{{ url_for('auth.login') }}">Login</a>
+    <a href="{{ url_for('auth.register') }}">Register</a>
+{% endif %}
+
+</body>
+</html>
+

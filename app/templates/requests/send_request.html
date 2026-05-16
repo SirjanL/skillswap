@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}— Send Request{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:580px; margin:auto;">
+    <h2 style="margin-bottom:0.5rem;">📨 Send Exchange Request</h2>
+    <p style="color:#777; margin-bottom:1.5rem;">
+        to <b>{{ receiver.name }}</b>
+    </p>
+
+    <form method="POST">
+
+        <label>Skill you will <span style="color:#1abc9c;">teach them</span></label>
+        <select name="offered_skill_id" required>
+            <option value="">— Select a skill you offer —</option>
+            {% for skill in match_info.i_can_teach_them %}
+                <option value="{{ skill.skill_id }}">{{ skill.skill_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Skill you want to <span style="color:#e67e22;">learn from them</span></label>
+        <select name="requested_skill_id" required>
+            <option value="">— Select a skill you want —</option>
+            {% for skill in match_info.they_can_teach_me %}
+                <option value="{{ skill.skill_id }}">{{ skill.skill_name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Message <span style="color:#aaa; font-weight:normal;">(optional)</span></label>
+        <textarea name="message" rows="4"
+            placeholder="Introduce yourself and explain what you'd like to exchange..."></textarea>
+
+        <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+            <button type="submit" class="btn btn-primary">Send Request</button>
+            <a href="{{ url_for('matching.user_detail', user_id=receiver.user_id) }}"
+               style="color:#777; padding:0.6rem 0;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

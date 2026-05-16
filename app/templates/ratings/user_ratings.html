@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}— {{ user.name }}'s Ratings{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2>⭐ {{ user.name }}'s Ratings</h2>
+        <a href="{{ url_for('profile.view_profile') }}" style="color:#777;">
+            ← Back to Profile
+        </a>
+    </div>
+
+    {% if avg %}
+    <div style="margin:1rem 0; font-size:1.1rem;">
+        Average Rating: <b style="color:#f39c12;">{{ avg }} / 5</b>
+        ({{ all_ratings|length }} review{{ 's' if all_ratings|length != 1 }})
+    </div>
+    {% endif %}
+
+    <hr style="margin:1rem 0;">
+
+    {% if all_ratings %}
+        {% for r in all_ratings %}
+        <div style="border-bottom:1px solid #eee; padding:1rem 0;">
+            <div style="color:#f39c12; font-size:1.1rem;">
+                {% for i in range(r.rating) %}⭐{% endfor %}
+            </div>
+            {% if r.feedback %}
+            <p style="margin:0.5rem 0; color:#555;">{{ r.feedback }}</p>
+            {% endif %}
+            <p style="font-size:0.8rem; color:#aaa;">
+                by {{ r.rater.name if r.rater else 'Anonymous' }}
+            </p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color:#aaa; text-align:center; padding:2rem;">
+            No ratings yet.
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

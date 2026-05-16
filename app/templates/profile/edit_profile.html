@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}— Edit Profile{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 560px; margin: auto;">
+    <h2 style="margin-bottom:1.5rem;">Edit Profile</h2>
+
+    <form method="POST">
+        <label>Full Name</label>
+        <input type="text" name="name" value="{{ user.name }}" required>
+
+        <label>Location</label>
+        <input type="text" name="location" value="{{ user.location }}" placeholder="e.g. Kathmandu, Nepal">
+
+        <label>Bio</label>
+        <textarea name="bio" rows="4" placeholder="Tell others a bit about yourself...">{{ user.bio }}</textarea>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="{{ url_for('profile.view_profile') }}" style="margin-left:1rem; color:#777;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}— Messages{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom:1.5rem;">💬 Messages</h2>
+
+{% if conversations %}
+    {% for convo in conversations %}
+    <a href="{{ url_for('messages.conversation', exchange_id=convo.exchange.exchange_id) }}"
+       style="text-decoration:none; color:inherit;">
+        <div class="card" style="margin-bottom:0.8rem; display:flex;
+                                  justify-content:space-between; align-items:center;">
+            <div>
+                <b style="font-size:1rem;">{{ convo.other.name }}</b>
+                <br>
+                {% if convo.last_msg %}
+                    <span style="color:#777; font-size:0.85rem;">
+                        {% if convo.last_msg.sender_id == current_user.user_id %}
+                            You: 
+                        {% endif %}
+                        {{ convo.last_msg.content[:60] }}
+                        {% if convo.last_msg.content|length > 60 %}...{% endif %}
+                    </span>
+                {% else %}
+                    <span style="color:#aaa; font-size:0.85rem;">
+                        No messages yet. Say hello!
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if convo.unread > 0 %}
+            <span style="background:#e74c3c; color:white; border-radius:50%;
+                         padding:0.2rem 0.5rem; font-size:0.8rem;">
+                {{ convo.unread }}
+            </span>
+            {% endif %}
+        </div>
+    </a>
+    {% endfor %}
+
+{% else %}
+    <div class="card" style="text-align:center; padding:3rem;">
+        <h3 style="color:#aaa;">No conversations yet 💬</h3>
+        <p style="color:#bbb; margin:1rem 0;">
+            You can message users once a skill exchange request is accepted.
+        </p>
+        <a href="{{ url_for('matching.discover') }}"
+           class="btn btn-primary">Find a Match</a>
+    </div>
+{% endif %}
+{% endblock %}
