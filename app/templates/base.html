@@ -99,13 +99,14 @@
             transition: all 0.2s; letter-spacing: 0.01em;
         }
         .btn-primary {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             color: white;
-            box-shadow: 0 0 20px rgba(124,106,255,0.3);
+            font-weight: 600;
+            box-shadow: 0 0 20px rgba(124,106,255,0.4);
         }
         .btn-primary:hover {
-            background: #9080ff;
-            box-shadow: 0 0 28px rgba(124,106,255,0.5);
+            opacity: 0.9;
+            box-shadow: 0 0 28px rgba(124,106,255,0.6);
             transform: translateY(-1px);
         }
         .btn-danger {
@@ -245,8 +246,7 @@
             <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost" style="margin-left:0.5rem;">Logout</a>
         {% else %}
             <a href="{{ url_for('auth.login') }}">Login</a>
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="margin-left:0.5rem;">Get Started</a>
-        {% endif %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="margin-left:0.5rem; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:white; font-weight:600;">Get Started →</a>        {% endif %}
     </div>
 </nav>
 

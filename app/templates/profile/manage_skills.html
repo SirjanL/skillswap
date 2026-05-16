@@ -6,8 +6,8 @@
     <h2 style="margin-bottom:1.5rem;">Manage Your Skills</h2>
 
     <!-- Add Skill Form -->
-    <form method="POST" style="background:#f9f9f9; padding:1.5rem; border-radius:8px; margin-bottom:2rem;">
-        <h3 style="margin-bottom:1rem;">➕ Add a Skill</h3>
+    <form method="POST" style="background:var(--surface2); border:1px solid var(--border); padding:1.5rem; border-radius:8px; margin-bottom:2rem;">
+        <h3 style="margin-bottom:1rem; color:var(--text);">➕ Add a Skill</h3>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
             <div>
@@ -48,14 +48,14 @@
             <h3 style="color:#1abc9c; margin-bottom:1rem;">Skills I Offer</h3>
             {% if offered_skills %}
                 {% for us in offered_skills %}
-                <div style="background:#f0fdf8; padding:0.6rem 1rem; border-radius:5px; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+                <div style="background:var(--surface2); border:1px solid var(--border); padding:0.6rem 1rem; border-radius:5px; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <b>{{ us.skill.skill_name }}</b>
-                        <span style="color:#777; font-size:0.85rem;"> — {{ us.level }}</span>
+                        <b style="color:var(--text);">{{ us.skill.skill_name }}</b>
+                        <span style="color:var(--muted); font-size:0.85rem;"> — {{ us.level }}</span>
                     </div>
                     <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
-                       style="color:#e74c3c; font-size:0.85rem;"
-                       onclick="return confirm('Remove this skill?')">Remove</a>
+                    style="color:var(--accent2); font-size:0.85rem;"
+                    onclick="return confirm('Remove this skill?')">Remove</a>
                 </div>
                 {% endfor %}
             {% else %}
@@ -67,14 +67,14 @@
             <h3 style="color:#e67e22; margin-bottom:1rem;">Skills I Want</h3>
             {% if wanted_skills %}
                 {% for us in wanted_skills %}
-                <div style="background:#fdf6ec; padding:0.6rem 1rem; border-radius:5px; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
+                <div style="background:var(--surface2); border:1px solid var(--border); padding:0.6rem 1rem; border-radius:5px; margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center;">
                     <div>
-                        <b>{{ us.skill.skill_name }}</b>
-                        <span style="color:#777; font-size:0.85rem;"> — {{ us.level }}</span>
+                        <b style="color:var(--text);">{{ us.skill.skill_name }}</b>
+                        <span style="color:var(--muted); font-size:0.85rem;"> — {{ us.level }}</span>
                     </div>
                     <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
-                       style="color:#e74c3c; font-size:0.85rem;"
-                       onclick="return confirm('Remove this skill?')">Remove</a>
+                    style="color:var(--accent2); font-size:0.85rem;"
+                    onclick="return confirm('Remove this skill?')">Remove</a>
                 </div>
                 {% endfor %}
             {% else %}
