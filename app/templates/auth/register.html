@@ -2,27 +2,40 @@
 {% block title %}— Register{% endblock %}
 
 {% block content %}
-<div class="card" style="max-width: 480px; margin: auto;">
-    <h2 style="margin-bottom: 1.5rem;">Create an Account</h2>
+<div style="max-width:420px; margin:3rem auto;">
 
-    <form method="POST">
-        <label>Full Name</label>
-        <input type="text" name="name" required placeholder="e.g. Sirjan Lamichhane">
+    <div style="text-align:center; margin-bottom:2rem;">
+        <h1 style="font-size:2.2rem; background:linear-gradient(135deg,var(--accent),var(--accent2));
+                   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+                   margin-bottom:0.5rem;">Join SkillSwap</h1>
+        <p style="color:var(--muted);">Trade skills. Grow together. Free forever.</p>
+    </div>
 
-        <label>Email</label>
-        <input type="email" name="email" required placeholder="you@example.com">
+    <div class="card">
+        <form method="POST">
+            <label>Full Name</label>
+            <input type="text" name="name" required placeholder="e.g. Sirjan Lamichhane" autofocus>
 
-        <label>Password</label>
-        <input type="password" name="password" required placeholder="Min 6 characters">
+            <label>Email</label>
+            <input type="email" name="email" required placeholder="you@example.com">
 
-        <label>Confirm Password</label>
-        <input type="password" name="confirm_password" required>
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="Min 6 characters">
 
-        <button type="submit" class="btn btn-primary" style="width:100%;">Register</button>
-    </form>
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" required placeholder="••••••••">
 
-    <p style="margin-top: 1rem; text-align:center;">
-        Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
-    </p>
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:0.75rem;">
+                Create Account →
+            </button>
+        </form>
+
+        <p style="text-align:center; margin-top:1.25rem; color:var(--muted); font-size:0.9rem;">
+            Already have an account?
+            <a href="{{ url_for('auth.login') }}" style="color:var(--accent); font-weight:600;">
+                Sign in
+            </a>
+        </p>
+    </div>
 </div>
 {% endblock %}

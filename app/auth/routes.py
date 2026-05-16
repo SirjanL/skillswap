@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app.auth import auth
 from app import db
 from app.models import User
+from app.models import UserSkill 
 
 
 # ── REGISTER ─────────────────────────────────────────────
@@ -86,3 +87,26 @@ def logout():
 @login_required
 def dashboard():
         return redirect(url_for('profile.view_profile'))
+
+
+# ── HOME ──────────────────────────────────────────────────
+@auth.route('/')
+@auth.route('/dashboard')
+@login_required
+def dashboard():
+    from app.matching.routes import get_matches
+
+    offered_count = UserSkill.query.filter_by(
+        user_id=current_user.user_id, type='offer'
+    ).count()
+    wanted_count = UserSkill.query.filter_by(
+        user_id=current_user.user_id, type='want'
+    ).count()
+    match_count = len(get_matches(current_user.user_id))
+
+    return render_template(
+        'home.html',
+        offered_count=offered_count,
+        wanted_count=wanted_count,
+        match_count=match_count
+    )

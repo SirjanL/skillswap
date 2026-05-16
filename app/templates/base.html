@@ -4,75 +4,249 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillSwap {% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg:        #0f1117;
+            --surface:   #1a1d27;
+            --surface2:  #222536;
+            --border:    #2e3248;
+            --accent:    #7c6aff;
+            --accent2:   #ff6a8e;
+            --green:     #3dffa0;
+            --orange:    #ffaa3d;
+            --text:      #eef0f8;
+            --muted:     #7b809a;
+            --radius:    14px;
+            --radius-sm: 8px;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
 
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse 80% 50% at 20% -10%, rgba(124,106,255,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 110%, rgba(255,106,142,0.10) 0%, transparent 60%);
+        }
+
+        /* ── NAVBAR ──────────────────────────────── */
         nav {
-            background: #2c3e50; padding: 1rem 2rem;
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(15,17,23,0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
             display: flex; justify-content: space-between; align-items: center;
+            height: 64px;
         }
-        nav a { color: white; text-decoration: none; margin-left: 1rem; }
-        nav .brand { font-size: 1.3rem; font-weight: bold; color: #1abc9c; }
 
-        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        .brand {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800; font-size: 1.3rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-decoration: none; letter-spacing: -0.5px;
+        }
 
+        .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+
+        .nav-links a {
+            color: var(--muted); text-decoration: none;
+            font-size: 0.875rem; font-weight: 500;
+            padding: 0.4rem 0.75rem; border-radius: 8px;
+            transition: all 0.2s; position: relative;
+        }
+        .nav-links a:hover { color: var(--text); background: var(--surface2); }
+
+        .nav-bell { position: relative; display: inline-flex; }
+        .badge {
+            position: absolute; top: -4px; right: -4px;
+            background: var(--accent2); color: white;
+            border-radius: 50%; width: 18px; height: 18px;
+            font-size: 0.65rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg);
+        }
+
+        /* ── LAYOUT ──────────────────────────────── */
+        .container {
+            max-width: 960px; margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+        }
+
+        /* ── CARDS ───────────────────────────────── */
         .card {
-            background: white; padding: 2rem;
-            border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            transition: border-color 0.2s;
         }
+        .card:hover { border-color: #3e4260; }
 
+        /* ── BUTTONS ─────────────────────────────── */
         .btn {
-            padding: 0.6rem 1.4rem; border: none; border-radius: 5px;
-            cursor: pointer; font-size: 1rem; text-decoration: none; display: inline-block;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            padding: 0.55rem 1.25rem;
+            border: none; border-radius: 8px;
+            cursor: pointer; font-size: 0.875rem;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500; text-decoration: none;
+            transition: all 0.2s; letter-spacing: 0.01em;
         }
-        .btn-primary { background: #1abc9c; color: white; }
-        .btn-danger  { background: #e74c3c; color: white; }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 20px rgba(124,106,255,0.3);
+        }
+        .btn-primary:hover {
+            background: #9080ff;
+            box-shadow: 0 0 28px rgba(124,106,255,0.5);
+            transform: translateY(-1px);
+        }
+        .btn-danger {
+            background: rgba(255,106,142,0.15);
+            color: var(--accent2);
+            border: 1px solid rgba(255,106,142,0.3);
+        }
+        .btn-danger:hover { background: rgba(255,106,142,0.25); }
+
+        .btn-ghost {
+            background: var(--surface2);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { color: var(--text); border-color: #3e4260; }
+
+        /* ── FORMS ───────────────────────────────── */
+        label {
+            display: block;
+            font-size: 0.8rem; font-weight: 500;
+            color: var(--muted); text-transform: uppercase;
+            letter-spacing: 0.06em; margin-bottom: 0.4rem;
+        }
 
         input, textarea, select {
-            width: 100%; padding: 0.6rem; margin: 0.4rem 0 1rem 0;
-            border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            padding: 0.65rem 0.9rem;
+            font-size: 0.95rem;
+            font-family: 'DM Sans', sans-serif;
+            margin-bottom: 1.25rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
         }
-        label { font-weight: bold; font-size: 0.9rem; }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(124,106,255,0.15);
+        }
+        input::placeholder, textarea::placeholder { color: var(--muted); }
+        select option { background: var(--surface2); }
 
+        /* ── ALERTS ──────────────────────────────── */
         .alert {
-            padding: 0.8rem 1rem; border-radius: 5px; margin-bottom: 1rem;
+            padding: 0.85rem 1.1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1rem;
+            font-size: 0.9rem; font-weight: 500;
+            display: flex; align-items: center; gap: 0.5rem;
         }
-        .alert-error   { background: #fde8e8; color: #c0392b; border: 1px solid #e74c3c; }
-        .alert-success { background: #e8f8f1; color: #1e8449; border: 1px solid #1abc9c; }
-        .badge-pending  { background:#fff3cd; color:#856404; }
-        .badge-accepted { background:#e8f8f1; color:#1e8449; }
-        .badge-rejected { background:#fde8e8; color:#c0392b; }
-        .notif-unread      { border-left: 4px solid #1abc9c; }
-        .notif-unread-text { font-weight: bold; }
+        .alert-error {
+            background: rgba(255,106,142,0.1);
+            border: 1px solid rgba(255,106,142,0.3);
+            color: #ff8fab;
+        }
+        .alert-success {
+            background: rgba(61,255,160,0.08);
+            border: 1px solid rgba(61,255,160,0.25);
+            color: var(--green);
+        }
+
+        /* ── SKILL TAGS ──────────────────────────── */
+        .skill-tag {
+            display: inline-flex; align-items: center;
+            padding: 0.3rem 0.8rem; border-radius: 20px;
+            font-size: 0.82rem; font-weight: 500;
+        }
+        .skill-offer {
+            background: rgba(61,255,160,0.1);
+            color: var(--green);
+            border: 1px solid rgba(61,255,160,0.2);
+        }
+        .skill-want {
+            background: rgba(255,170,61,0.1);
+            color: var(--orange);
+            border: 1px solid rgba(255,170,61,0.2);
+        }
+
+        /* ── STATUS BADGES ───────────────────────── */
+        .badge-pending  { background: rgba(255,170,61,0.1);  color: var(--orange); border: 1px solid rgba(255,170,61,0.25);  padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+        .badge-accepted { background: rgba(61,255,160,0.1);  color: var(--green);  border: 1px solid rgba(61,255,160,0.25);  padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+        .badge-rejected { background: rgba(255,106,142,0.1); color: var(--accent2);border: 1px solid rgba(255,106,142,0.25); padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
+
+        /* ── NOTIFICATION STYLES ─────────────────── */
+        .notif-unread      { border-left: 3px solid var(--accent) !important; }
+        .notif-unread-text { font-weight: 600; color: var(--text); }
+
+        /* ── PAGE HEADINGS ───────────────────────── */
+        h1, h2, h3 {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700; letter-spacing: -0.03em;
+        }
+        h2 { font-size: 1.6rem; }
+        h3 { font-size: 1.15rem; }
+
+        /* ── DIVIDERS ────────────────────────────── */
+        hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+        /* ── LINKS ───────────────────────────────── */
+        a { color: var(--accent); }
+        a:hover { color: #9080ff; }
+
+        /* ── SCROLLBAR ───────────────────────────── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        /* ── FADE IN ANIMATION ───────────────────── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .container { animation: fadeUp 0.4s ease both; }
     </style>
 </head>
 <body>
 
-nav>
-    <span class="brand">🔄 SkillSwap</span>
-    <div>
-    {% if current_user.is_authenticated %}
-    <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
-    <a href="{{ url_for('requests_bp.inbox') }}">📬 Inbox</a>
-    <a href="{{ url_for('requests_bp.exchanges') }}">🤝 Exchanges</a>
-    <a href="{{ url_for('notifications.view_notifications') }}" style="position:relative;">
-        🔔 Alerts
-        {% if unread_count > 0 %}
-        <span style="
-            background:#e74c3c; color:white; border-radius:50%;
-            padding:0.1rem 0.4rem; font-size:0.7rem;
-            position:absolute; top:-6px; right:-10px;">
-            {{ unread_count }}
-        </span>
+<nav>
+    <a href="/" class="brand">⟳ SkillSwap</a>
+    <div class="nav-links">
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
+            <a href="{{ url_for('requests_bp.inbox') }}">📬 Inbox</a>
+            <a href="{{ url_for('requests_bp.exchanges') }}">🤝 Exchanges</a>
+            <a href="{{ url_for('messages.inbox') }}">💬 Messages</a>
+            <span class="nav-bell">
+                <a href="{{ url_for('notifications.view_notifications') }}">🔔 Alerts</a>
+                {% if unread_count > 0 %}
+                    <span class="badge">{{ unread_count }}</span>
+                {% endif %}
+            </span>
+            <a href="{{ url_for('profile.view_profile') }}" style="color: var(--accent); font-weight:600;">
+                👤 {{ current_user.name }}
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost" style="margin-left:0.5rem;">Logout</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="margin-left:0.5rem;">Get Started</a>
         {% endif %}
-    </a>
-    <a href="{{ url_for('profile.view_profile') }}">👤 {{ current_user.name }}</a>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-    {% else %}
-    <a href="{{ url_for('auth.login') }}">Login</a>
-    <a href="{{ url_for('auth.register') }}">Register</a>
-    {% endif %}
     </div>
 </nav>
 
@@ -80,7 +254,10 @@ nav>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
+                <div class="alert alert-{{ category }}">
+                    {% if category == 'error' %}⚠️{% else %}✅{% endif %}
+                    {{ message }}
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
@@ -88,38 +265,5 @@ nav>
     {% block content %}{% endblock %}
 </div>
 
-{% if current_user.is_authenticated %}
-    <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
-    <a href="{{ url_for('profile.view_profile') }}">👤 {{ current_user.name }}</a>
-    <a href="{{ url_for('profile.manage_skills') }}">My Skills</a>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-{% else %}
-    <a href="{{ url_for('auth.login') }}">Login</a>
-    <a href="{{ url_for('auth.register') }}">Register</a>
-{% endif %}
-
-{% if current_user.is_authenticated %}
-    <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
-    <a href="{{ url_for('requests_bp.inbox') }}">📬 Inbox</a>
-    <a href="{{ url_for('requests_bp.exchanges') }}">🤝 Exchanges</a>
-    <a href="{{ url_for('messages.inbox') }}">💬 Messages</a>
-    <a href="{{ url_for('notifications.view_notifications') }}" style="position:relative;">
-        🔔 Alerts
-        {% if unread_count > 0 %}
-        <span style="background:#e74c3c; color:white; border-radius:50%;
-                     padding:0.1rem 0.4rem; font-size:0.7rem;
-                     position:absolute; top:-6px; right:-10px;">
-            {{ unread_count }}
-        </span>
-        {% endif %}
-    </a>
-    <a href="{{ url_for('profile.view_profile') }}">👤 {{ current_user.name }}</a>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-{% else %}
-    <a href="{{ url_for('auth.login') }}">Login</a>
-    <a href="{{ url_for('auth.register') }}">Register</a>
-{% endif %}
-
 </body>
 </html>
-
