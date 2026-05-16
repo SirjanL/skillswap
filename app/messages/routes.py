@@ -9,7 +9,6 @@ from app.models import Message, Exchange, Request, User
 @messages.route('/messages')
 @login_required
 def inbox():
-    # Find all active/completed exchanges involving current user
     exchanges = Request.query.filter(
         Request.status == 'accepted',
         db.or_(
@@ -18,14 +17,21 @@ def inbox():
         )
     ).all()
 
-    # Build conversation list with last message and unread count
+    # Deduplicate — keep only one conversation per other user
+    seen_user_ids = set()
     conversations = []
+
     for req in exchanges:
         other = (
             req.receiver
             if req.sender_id == current_user.user_id
             else req.sender
         )
+
+        if other.user_id in seen_user_ids:
+            continue
+        seen_user_ids.add(other.user_id)
+
         last_msg = Message.query.filter_by(
             exchange_id=req.exchange.exchange_id
         ).order_by(Message.timestamp.desc()).first()
@@ -44,6 +50,7 @@ def inbox():
         })
 
     return render_template('messages/inbox.html', conversations=conversations)
+
 
 
 # ── CONVERSATION VIEW ─────────────────────────────────────

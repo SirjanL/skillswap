@@ -229,12 +229,12 @@
     <a href="/" class="brand">⟳ SkillSwap</a>
     <div class="nav-links">
         {% if current_user.is_authenticated %}
-            <a href="{{ url_for('matching.discover') }}">🔍 Discover</a>
-            <a href="{{ url_for('requests_bp.inbox') }}">📬 Inbox</a>
-            <a href="{{ url_for('requests_bp.exchanges') }}">🤝 Exchanges</a>
-            <a href="{{ url_for('messages.inbox') }}">💬 Messages</a>
+            <a href="{{ url_for('matching.discover') }}">Discover</a>
+            <a href="{{ url_for('requests_bp.inbox') }}">Inbox</a>
+            <a href="{{ url_for('requests_bp.exchanges') }}">Exchanges</a>
+            <a href="{{ url_for('messages.inbox') }}">Messages</a>
             <span class="nav-bell">
-                <a href="{{ url_for('notifications.view_notifications') }}">🔔 Alerts</a>
+                <a href="{{ url_for('notifications.view_notifications') }}">Alerts</a>
                 {% if unread_count > 0 %}
                     <span class="badge">{{ unread_count }}</span>
                 {% endif %}

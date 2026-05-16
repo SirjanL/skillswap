@@ -1,181 +1,165 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.5">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
-</head>
-<body>
-<p class="p1">{% extends "base.html" %}</p>
-<p class="p1">{% block title %}— Home{% endblock %}</p>
-<p class="p2"><br></p>
-<p class="p1">{% block content %}</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!-- Hero Section --&gt;</p>
-<p class="p1">&lt;div style="text-align:center; padding:3rem 1rem 2rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div style="display:inline-block; background:rgba(124,106,255,0.1);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>border:1px solid rgba(124,106,255,0.25); border-radius:20px;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>padding:0.3rem 1rem; font-size:0.8rem; color:var(--accent);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>font-weight:600; letter-spacing:0.08em; margin-bottom:1.5rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>WELCOME BACK, {{ current_user.name.upper() }} 👋</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1 style="font-size:3rem; line-height:1.15; margin-bottom:1rem;</p>
-<p class="p1"><span class="Apple-converted-space">               </span>background:linear-gradient(135deg, var(--text) 0%, var(--muted) 100%);</p>
-<p class="p1"><span class="Apple-converted-space">               </span>-webkit-background-clip:text; -webkit-text-fill-color:transparent;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>What will you&lt;br&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;span style="background:linear-gradient(135deg,var(--accent),var(--accent2));</p>
-<p class="p1"><span class="Apple-converted-space">                     </span>-webkit-background-clip:text; -webkit-text-fill-color:transparent;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>learn today?</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/span&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/h1&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p style="color:var(--muted); font-size:1.05rem; max-width:480px;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>margin:0 auto 2rem; line-height:1.6;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>Trade your skills with people around you.</p>
-<p class="p1"><span class="Apple-converted-space">        </span>No money. No barriers. Just knowledge flowing freely.</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/p&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;a href="{{ url_for('matching.discover') }}" class="btn btn-primary"</p>
-<p class="p1"><span class="Apple-converted-space">           </span>style="padding:0.75rem 1.75rem; font-size:1rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>🔍 Find a Match</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/a&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;a href="{{ url_for('profile.manage_skills') }}" class="btn btn-ghost"</p>
-<p class="p1"><span class="Apple-converted-space">           </span>style="padding:0.75rem 1.75rem; font-size:1rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>+ Add Skills</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/a&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;hr style="margin:1rem 0 2rem;"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!-- Stats Row --&gt;</p>
-<p class="p1">&lt;div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem;"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card" style="text-align:center; padding:1.5rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="font-size:2rem; font-family:'Syne',sans-serif; font-weight:800;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>color:var(--accent); margin-bottom:0.3rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>{{ offered_count }}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="color:var(--muted); font-size:0.85rem; text-transform:uppercase;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>letter-spacing:0.06em;"&gt;Skills Offered&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card" style="text-align:center; padding:1.5rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="font-size:2rem; font-family:'Syne',sans-serif; font-weight:800;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>color:var(--green); margin-bottom:0.3rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>{{ wanted_count }}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="color:var(--muted); font-size:0.85rem; text-transform:uppercase;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>letter-spacing:0.06em;"&gt;Skills Wanted&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="card" style="text-align:center; padding:1.5rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="font-size:2rem; font-family:'Syne',sans-serif; font-weight:800;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>color:var(--orange); margin-bottom:0.3rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>{{ match_count }}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div style="color:var(--muted); font-size:0.85rem; text-transform:uppercase;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>letter-spacing:0.06em;"&gt;Your Matches&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;!-- Quick Actions --&gt;</p>
-<p class="p1">&lt;h3 style="margin-bottom:1rem; color:var(--muted); font-size:0.8rem;</p>
-<p class="p1"><span class="Apple-converted-space">           </span>text-transform:uppercase; letter-spacing:0.08em;"&gt;Quick Actions&lt;/h3&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('matching.discover') }}" style="text-decoration:none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card" style="display:flex; align-items:center; gap:1rem;</p>
-<p class="p1"><span class="Apple-converted-space">                                  </span>cursor:pointer; transition:transform 0.2s;"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseover="this.style.transform='translateY(-2px)'"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseout="this.style.transform='translateY(0)'"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>background:rgba(124,106,255,0.15); display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>align-items:center; justify-content:center; font-size:1.4rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>🔍</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="font-weight:600; font-family:'Syne',sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>margin-bottom:0.2rem;"&gt;Discover Matches&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="color:var(--muted); font-size:0.85rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>Find users with complementary skills</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/a&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('requests_bp.inbox') }}" style="text-decoration:none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card" style="display:flex; align-items:center; gap:1rem;</p>
-<p class="p1"><span class="Apple-converted-space">                                  </span>cursor:pointer; transition:transform 0.2s;"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseover="this.style.transform='translateY(-2px)'"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseout="this.style.transform='translateY(0)'"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>background:rgba(61,255,160,0.1); display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>align-items:center; justify-content:center; font-size:1.4rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>📬</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="font-weight:600; font-family:'Syne',sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>margin-bottom:0.2rem;"&gt;Inbox&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="color:var(--muted); font-size:0.85rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>View incoming exchange requests</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/a&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('requests_bp.exchanges') }}" style="text-decoration:none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card" style="display:flex; align-items:center; gap:1rem;</p>
-<p class="p1"><span class="Apple-converted-space">                                  </span>cursor:pointer; transition:transform 0.2s;"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseover="this.style.transform='translateY(-2px)'"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseout="this.style.transform='translateY(0)'"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>background:rgba(255,170,61,0.1); display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>align-items:center; justify-content:center; font-size:1.4rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>🤝</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="font-weight:600; font-family:'Syne',sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>margin-bottom:0.2rem;"&gt;My Exchanges&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="color:var(--muted); font-size:0.85rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>Track your active skill exchanges</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/a&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="{{ url_for('profile.view_profile') }}" style="text-decoration:none;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="card" style="display:flex; align-items:center; gap:1rem;</p>
-<p class="p1"><span class="Apple-converted-space">                                  </span>cursor:pointer; transition:transform 0.2s;"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseover="this.style.transform='translateY(-2px)'"</p>
-<p class="p1"><span class="Apple-converted-space">             </span>onmouseout="this.style.transform='translateY(0)'"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>background:rgba(255,106,142,0.1); display:flex;</p>
-<p class="p1"><span class="Apple-converted-space">                        </span>align-items:center; justify-content:center; font-size:1.4rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>👤</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="font-weight:600; font-family:'Syne',sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">                            </span>margin-bottom:0.2rem;"&gt;My Profile&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;div style="color:var(--muted); font-size:0.85rem;"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                    </span>View and edit your profile</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/a&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">{% endblock %}</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}— Home{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div style="text-align:center; padding:3rem 1rem 2rem;">
+    <div style="display:inline-block; background:rgba(124,106,255,0.1);
+                border:1px solid rgba(124,106,255,0.25); border-radius:20px;
+                padding:0.3rem 1rem; font-size:0.8rem; color:var(--accent);
+                font-weight:600; letter-spacing:0.08em; margin-bottom:1.5rem;">
+        WELCOME BACK, {{ current_user.name.upper() }} 👋
+    </div>
+
+    <h1 style="font-size:3rem; line-height:1.15; margin-bottom:1rem;
+               background:linear-gradient(135deg, var(--text) 0%, var(--muted) 100%);
+               -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+        What will you<br>
+        <span style="background:linear-gradient(135deg,var(--accent),var(--accent2));
+                     -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+            learn today?
+        </span>
+    </h1>
+
+    <p style="color:var(--muted); font-size:1.05rem; max-width:480px;
+              margin:0 auto 2rem; line-height:1.6;">
+        Trade your skills with people around you.
+        No money. No barriers. Just knowledge flowing freely.
+    </p>
+
+    <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+        <a href="{{ url_for('matching.discover') }}" class="btn btn-primary"
+           style="padding:0.75rem 1.75rem; font-size:1rem;">
+            🔍 Find a Match
+        </a>
+        <a href="{{ url_for('profile.manage_skills') }}" class="btn btn-ghost"
+           style="padding:0.75rem 1.75rem; font-size:1rem;">
+            + Add Skills
+        </a>
+    </div>
+</div>
+
+<hr style="margin:1rem 0 2rem;">
+
+<!-- Stats Row -->
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem;">
+
+    <div class="card" style="text-align:center; padding:1.5rem;">
+        <div style="font-size:2rem; font-family:'Syne',sans-serif; font-weight:800;
+                    color:var(--accent); margin-bottom:0.3rem;">
+            {{ offered_count }}
+        </div>
+        <div style="color:var(--muted); font-size:0.85rem; text-transform:uppercase;
+                    letter-spacing:0.06em;">Skills Offered</div>
+    </div>
+
+    <div class="card" style="text-align:center; padding:1.5rem;">
+        <div style="font-size:2rem; font-family:'Syne',sans-serif; font-weight:800;
+                    color:var(--green); margin-bottom:0.3rem;">
+            {{ wanted_count }}
+        </div>
+        <div style="color:var(--muted); font-size:0.85rem; text-transform:uppercase;
+                    letter-spacing:0.06em;">Skills Wanted</div>
+    </div>
+
+    <div class="card" style="text-align:center; padding:1.5rem;">
+        <div style="font-size:2rem; font-family:'Syne',sans-serif; font-weight:800;
+                    color:var(--orange); margin-bottom:0.3rem;">
+            {{ match_count }}
+        </div>
+        <div style="color:var(--muted); font-size:0.85rem; text-transform:uppercase;
+                    letter-spacing:0.06em;">Your Matches</div>
+    </div>
+
+</div>
+
+<!-- Quick Actions -->
+<h3 style="margin-bottom:1rem; color:var(--muted); font-size:0.8rem;
+           text-transform:uppercase; letter-spacing:0.08em;">Quick Actions</h3>
+
+<div style="display:grid; grid-template-columns:repeat(2,1fr); gap:1rem;">
+
+    <a href="{{ url_for('matching.discover') }}" style="text-decoration:none;">
+        <div class="card" style="display:flex; align-items:center; gap:1rem;
+                                  cursor:pointer; transition:transform 0.2s;"
+             onmouseover="this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.transform='translateY(0)'">
+            <div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;
+                        background:rgba(124,106,255,0.15); display:flex;
+                        align-items:center; justify-content:center; font-size:1.4rem;">
+                🔍
+            </div>
+            <div>
+                <div style="font-weight:600; font-family:'Syne',sans-serif;
+                            margin-bottom:0.2rem;">Discover Matches</div>
+                <div style="color:var(--muted); font-size:0.85rem;">
+                    Find users with complementary skills
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{{ url_for('requests_bp.inbox') }}" style="text-decoration:none;">
+        <div class="card" style="display:flex; align-items:center; gap:1rem;
+                                  cursor:pointer; transition:transform 0.2s;"
+             onmouseover="this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.transform='translateY(0)'">
+            <div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;
+                        background:rgba(61,255,160,0.1); display:flex;
+                        align-items:center; justify-content:center; font-size:1.4rem;">
+                📬
+            </div>
+            <div>
+                <div style="font-weight:600; font-family:'Syne',sans-serif;
+                            margin-bottom:0.2rem;">Inbox</div>
+                <div style="color:var(--muted); font-size:0.85rem;">
+                    View incoming exchange requests
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{{ url_for('requests_bp.exchanges') }}" style="text-decoration:none;">
+        <div class="card" style="display:flex; align-items:center; gap:1rem;
+                                  cursor:pointer; transition:transform 0.2s;"
+             onmouseover="this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.transform='translateY(0)'">
+            <div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;
+                        background:rgba(255,170,61,0.1); display:flex;
+                        align-items:center; justify-content:center; font-size:1.4rem;">
+                🤝
+            </div>
+            <div>
+                <div style="font-weight:600; font-family:'Syne',sans-serif;
+                            margin-bottom:0.2rem;">My Exchanges</div>
+                <div style="color:var(--muted); font-size:0.85rem;">
+                    Track your active skill exchanges
+                </div>
+            </div>
+        </div>
+    </a>
+
+    <a href="{{ url_for('profile.view_profile') }}" style="text-decoration:none;">
+        <div class="card" style="display:flex; align-items:center; gap:1rem;
+                                  cursor:pointer; transition:transform 0.2s;"
+             onmouseover="this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.transform='translateY(0)'">
+            <div style="width:48px; height:48px; border-radius:12px; flex-shrink:0;
+                        background:rgba(255,106,142,0.1); display:flex;
+                        align-items:center; justify-content:center; font-size:1.4rem;">
+                👤
+            </div>
+            <div>
+                <div style="font-weight:600; font-family:'Syne',sans-serif;
+                            margin-bottom:0.2rem;">My Profile</div>
+                <div style="color:var(--muted); font-size:0.85rem;">
+                    View and edit your profile
+                </div>
+            </div>
+        </div>
+    </a>
+
+</div>
+
+{% endblock %}

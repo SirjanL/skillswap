@@ -81,13 +81,6 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
-# ── DASHBOARD (temporary home after login) ────────────────
-@auth.route('/')
-@auth.route('/dashboard')
-@login_required
-def dashboard():
-        return redirect(url_for('profile.view_profile'))
-
 
 # ── HOME ──────────────────────────────────────────────────
 @auth.route('/')
