@@ -6,21 +6,30 @@ from app.models import Admin, User, Skill, UserSkill, Request, Exchange, Rating,
 from functools import wraps
 
 
-# ── ADMIN AUTH DECORATOR ──────────────────────────────────
 def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if not session.get('admin_logged_in'):
             flash('Please log in as admin.', 'error')
             return redirect(url_for('admin.login'))
+
+        # Verify admin still exists in database
+        from app.models import Admin
+        admin_user = Admin.query.filter_by(
+            email=session.get('admin_email')
+        ).first()
+
+        if not admin_user:
+            session.clear()
+            flash('Admin account no longer exists.', 'error')
+            return redirect(url_for('admin.login'))
+
         return f(*args, **kwargs)
     return decorated
 
 
-# ── SETUP (create first admin) ────────────────────────────
 @admin.route('/setup', methods=['GET', 'POST'])
 def setup():
-    # Block if admin already exists
     if Admin.query.first():
         flash('Admin already exists. Please log in.', 'error')
         return redirect(url_for('admin.login'))
@@ -57,7 +66,6 @@ def setup():
     return render_template('admin/login.html', setup_mode=True)
 
 
-# ── LOGIN ─────────────────────────────────────────────────
 @admin.route('/login', methods=['GET', 'POST'])
 def login():
     if session.get('admin_logged_in'):
@@ -75,13 +83,13 @@ def login():
 
         session['admin_logged_in'] = True
         session['admin_name']      = admin_user.name
+        session['admin_email']     = admin_user.email
         flash(f'Welcome, {admin_user.name}!', 'success')
         return redirect(url_for('admin.dashboard'))
 
     return render_template('admin/login.html', setup_mode=False)
 
 
-# ── LOGOUT ────────────────────────────────────────────────
 @admin.route('/logout')
 def logout():
     session.pop('admin_logged_in', None)
@@ -90,7 +98,6 @@ def logout():
     return redirect(url_for('admin.login'))
 
 
-# ── DASHBOARD ─────────────────────────────────────────────
 @admin.route('/dashboard')
 @admin_required
 def dashboard():
@@ -108,7 +115,6 @@ def dashboard():
     return render_template('admin/dashboard.html', stats=stats)
 
 
-# ── USERS ─────────────────────────────────────────────────
 @admin.route('/users')
 @admin_required
 def users():
@@ -133,15 +139,12 @@ def delete_user(user_id):
     user = User.query.get_or_404(user_id)
 
     try:
-        # Delete related records manually in correct order
         from app.models import Notification, Message, Rating, Exchange, Request, UserSkill
 
-        # Notifications
         Notification.query.filter(
             db.or_(Notification.user_id == user_id)
         ).delete()
 
-        # Messages
         Message.query.filter(
             db.or_(
                 Message.sender_id == user_id,
@@ -149,7 +152,6 @@ def delete_user(user_id):
             )
         ).delete()
 
-        # Ratings
         Rating.query.filter(
             db.or_(
                 Rating.rater_id == user_id,
@@ -157,7 +159,6 @@ def delete_user(user_id):
             )
         ).delete()
 
-        # Find all requests involving this user
         user_requests = Request.query.filter(
             db.or_(
                 Request.sender_id == user_id,
@@ -167,14 +168,12 @@ def delete_user(user_id):
 
         for req in user_requests:
             if req.exchange:
-                # Delete messages and ratings tied to this exchange
                 Message.query.filter_by(exchange_id=req.exchange.exchange_id).delete()
                 Rating.query.filter_by(exchange_id=req.exchange.exchange_id).delete()
                 db.session.delete(req.exchange)
             Notification.query.filter_by(request_id=req.request_id).delete()
             db.session.delete(req)
 
-        # UserSkills
         UserSkill.query.filter_by(user_id=user_id).delete()
 
         db.session.delete(user)
@@ -188,7 +187,6 @@ def delete_user(user_id):
     return redirect(url_for('admin.users'))
 
 
-# ── SKILLS ────────────────────────────────────────────────
 @admin.route('/skills')
 @admin_required
 def skills():
@@ -202,10 +200,8 @@ def delete_skill(skill_id):
     skill = Skill.query.get_or_404(skill_id)
 
     try:
-        # Remove all user_skills linked to this skill first
         UserSkill.query.filter_by(skill_id=skill_id).delete()
 
-        # Null out requests referencing this skill
         Request.query.filter_by(offered_skill_id=skill_id).update(
             {'offered_skill_id': None}
         )
@@ -224,7 +220,6 @@ def delete_skill(skill_id):
     return redirect(url_for('admin.skills'))
 
 
-# ── EXCHANGES ─────────────────────────────────────────────
 @admin.route('/exchanges')
 @admin_required
 def exchanges():

@@ -5,31 +5,26 @@ from app import db
 from app.models import Exchange, Rating, Request
 
 
-# ── RATE A USER ───────────────────────────────────────────
 @ratings.route('/rate/<int:exchange_id>', methods=['GET', 'POST'])
 @login_required
 def rate(exchange_id):
     exchange = Exchange.query.get_or_404(exchange_id)
     req      = exchange.request
 
-    # Only participants can rate
     if current_user.user_id not in [req.sender_id, req.receiver_id]:
         flash('Unauthorized.', 'error')
         return redirect(url_for('requests_bp.exchanges'))
 
-    # Only allow rating completed exchanges
     if exchange.status != 'completed':
         flash('You can only rate completed exchanges.', 'error')
         return redirect(url_for('requests_bp.exchanges'))
 
-    # Who is the other person?
     rated_user_id = (
         req.receiver_id
         if current_user.user_id == req.sender_id
         else req.sender_id
     )
 
-    # Check if already rated
     existing = Rating.query.filter_by(
         exchange_id=exchange_id,
         rater_id=current_user.user_id
@@ -60,7 +55,6 @@ def rate(exchange_id):
         flash('Rating submitted! Thanks for your feedback.', 'success')
         return redirect(url_for('requests_bp.exchanges'))
 
-    # Get the other user's info for display
     from app.models import User
     rated_user = User.query.get(rated_user_id)
 
@@ -71,7 +65,6 @@ def rate(exchange_id):
     )
 
 
-# ── VIEW RATINGS ON PROFILE ───────────────────────────────
 @ratings.route('/profile/ratings/<int:user_id>')
 @login_required
 def user_ratings(user_id):

@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <script>
-        // Apply theme before page renders to avoid flash
         (function() {
             const theme = localStorage.getItem('skillswap-theme') || 'dark';
             if (theme === 'system') {
@@ -17,36 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillSwap Admin {% block title %}{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        [data-theme="light"] {
-            --bg:        #f4f3ef;
-            --surface:   #ffffff;
-            --surface2:  #f0efe9;
-            --border:    #e2e0d8;
-            --text:      #1a1a1a;
-            --muted:     #6b6b6b;
-            --green:     #1a6b3c;
-            --green-bg:  #e8f5ee;
-            --red:       #8b1a1a;
-            --red-bg:    #fdf0f0;
-            --orange:    #8b5a1a;
-            --orange-bg: #fdf5e8;
-        }
-
-        [data-theme="dark"] {
-            --bg:        #0f1117;
-            --surface:   #1a1d27;
-            --surface2:  #222536;
-            --border:    #2e3248;
-            --text:      #eef0f8;
-            --muted:     #7b809a;
-            --green:     #3dffa0;
-            --green-bg:  rgba(61,255,160,0.1);
-            --red:       #ff6a8e;
-            --red-bg:    rgba(255,106,142,0.1);
-            --orange:    #ffaa3d;
-            --orange-bg: rgba(255,170,61,0.1);
-        }        
+    <style>  
         :root {
             --bg:        #f4f3ef;
             --surface:   #ffffff;
@@ -62,8 +32,8 @@
             --orange-bg: #fdf5e8;
             --text:      #1a1a1a;
             --muted:     #6b6b6b;
-            --mono:      'IBM Plex Mono', monospace;
-            --sans:      'IBM Plex Sans', sans-serif;
+            --mono:      'serif', sans-serif;
+            --sans:      'serif', sans-serif;
         }
 
         * { box-sizing:border-box; margin:0; padding:0; }
@@ -74,10 +44,9 @@
             color: var(--text);
             display: flex;
             min-height: 100vh;
-            font-size: 14px;
+            font-size: 16px;
         }
 
-        /* ── SIDEBAR ─────────────────────────── */
         .sidebar {
             width: 220px;
             background: var(--accent);
@@ -98,7 +67,7 @@
         .sidebar-brand {
             font-family: var(--mono);
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             color: white;
             letter-spacing: -0.02em;
         }
@@ -113,7 +82,7 @@
         }
 
         .sidebar-nav {
-            padding: 1rem 0.75rem;
+            padding: 1rem 0.5rem;
             flex: 1;
         }
 
@@ -134,7 +103,7 @@
             text-decoration: none;
             padding: 0.55rem 0.75rem;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 400;
             transition: all 0.15s;
             margin-bottom: 0.1rem;
@@ -164,7 +133,6 @@
             background: rgba(255,100,100,0.08);
         }
 
-        /* ── MAIN ────────────────────────────── */
         .main {
             flex: 1;
             display: flex;
@@ -211,7 +179,6 @@
             flex: 1;
         }
 
-        /* ── PAGE HEADER ─────────────────────── */
         .page-header {
             margin-bottom: 1.75rem;
             padding-bottom: 1.25rem;
@@ -232,7 +199,6 @@
             margin-top: 0.3rem;
         }
 
-        /* ── CARDS ───────────────────────────── */
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -240,7 +206,6 @@
             padding: 1.5rem;
         }
 
-        /* ── STAT CARDS ──────────────────────── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
@@ -278,7 +243,6 @@
             margin-top: 0.4rem;
         }
 
-        /* ── TABLE ───────────────────────────── */
         .table-wrap {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -313,7 +277,6 @@
         tr:last-child td { border-bottom: none; }
         tbody tr:hover td { background: var(--surface2); }
 
-        /* ── BUTTONS ─────────────────────────── */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -358,7 +321,6 @@
             border-color: var(--accent2);
         }
 
-        /* ── BADGES ──────────────────────────── */
         .badge {
             display: inline-flex;
             align-items: center;
@@ -392,7 +354,6 @@
             color: var(--red);
         }
 
-        /* ── ALERTS ──────────────────────────── */
         .alert {
             padding: 0.75rem 1rem;
             border-radius: 6px;
@@ -411,7 +372,6 @@
             border-color: #c0e8d0;
         }
 
-        /* ── FORMS ───────────────────────────── */
         input, select {
             width: 100%;
             background: var(--surface);
@@ -441,7 +401,6 @@
             font-weight: 500;
         }
 
-        /* ── QUICK ACTION CARDS ──────────────── */
         .action-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -477,7 +436,7 @@
 
 <aside class="sidebar">
     <div class="sidebar-header">
-        <div class="sidebar-brand">⟳ SkillSwap</div>
+        <div class="sidebar-brand">SkillSwap</div>
         <div class="sidebar-sub">Admin Console</div>
     </div>
 

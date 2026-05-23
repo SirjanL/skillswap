@@ -7,7 +7,6 @@ from app.matching.routes import get_matches
 from flask import jsonify
 
 
-# ── SEND REQUEST PAGE ─────────────────────────────────────
 @requests_bp.route('/request/send/<int:receiver_id>', methods=['GET', 'POST'])
 @login_required
 def send_request(receiver_id):
@@ -17,7 +16,6 @@ def send_request(receiver_id):
 
     receiver = User.query.get_or_404(receiver_id)
 
-    # Get match info to know which skills overlap
     matches = get_matches(current_user.user_id)
     match_info = next(
         (m for m in matches if m['user'].user_id == receiver_id), None
@@ -36,7 +34,6 @@ def send_request(receiver_id):
             flash('Please select both skills.', 'error')
             return redirect(url_for('requests_bp.send_request', receiver_id=receiver_id))
 
-        # Check for existing pending request between these two users
         existing = Request.query.filter_by(
             sender_id=current_user.user_id,
             receiver_id=receiver_id,
@@ -47,7 +44,6 @@ def send_request(receiver_id):
             flash('You already have a pending request with this user.', 'error')
             return redirect(url_for('matching.user_detail', user_id=receiver_id))
 
-        # Create the request
         new_request = Request(
             sender_id=current_user.user_id,
             receiver_id=receiver_id,
@@ -59,7 +55,6 @@ def send_request(receiver_id):
         db.session.add(new_request)
         db.session.flush()  # get request_id before commit
 
-        # Notify the receiver
         notification = Notification(
             user_id=receiver_id,
             request_id=new_request.request_id,
@@ -79,7 +74,6 @@ def send_request(receiver_id):
     )
 
 
-# ── INBOX ─────────────────────────────────────────────────
 @requests_bp.route('/inbox')
 @login_required
 def inbox():
@@ -94,13 +88,11 @@ def inbox():
     return render_template('requests/inbox.html', received=received, sent=sent)
 
 
-# ── REQUEST DETAIL + ACCEPT/REJECT ────────────────────────
 @requests_bp.route('/request/<int:request_id>', methods=['GET', 'POST'])
 @login_required
 def request_detail(request_id):
     req = Request.query.get_or_404(request_id)
 
-    # Only sender or receiver can view
     if current_user.user_id not in [req.sender_id, req.receiver_id]:
         flash('Unauthorized.', 'error')
         return redirect(url_for('requests_bp.inbox'))
@@ -108,7 +100,6 @@ def request_detail(request_id):
     if request.method == 'POST':
         action = request.form.get('action')  # 'accept' or 'reject'
 
-        # Only receiver can act on request
         if current_user.user_id != req.receiver_id:
             flash('Only the receiver can respond to this request.', 'error')
             return redirect(url_for('requests_bp.request_detail', request_id=request_id))
@@ -120,7 +111,6 @@ def request_detail(request_id):
         if action == 'accept':
             req.status = 'accepted'
 
-            # Auto-create exchange record
             exchange = Exchange(
                 request_id=req.request_id,
                 status='active'
@@ -128,7 +118,6 @@ def request_detail(request_id):
             db.session.add(exchange)
             db.session.flush()
 
-            # Notify sender
             notification = Notification(
                 user_id=req.sender_id,
                 request_id=req.request_id,
@@ -143,7 +132,6 @@ def request_detail(request_id):
         elif action == 'reject':
             req.status = 'rejected'
 
-            # Notify sender
             notification = Notification(
                 user_id=req.sender_id,
                 request_id=req.request_id,
@@ -160,7 +148,6 @@ def request_detail(request_id):
     return render_template('requests/request_detail.html', req=req)
 
 
-# ── ACTIVE EXCHANGES ──────────────────────────────────────
 @requests_bp.route('/exchanges')
 @login_required
 def exchanges():
@@ -175,7 +162,6 @@ def exchanges():
     return render_template('requests/exchanges.html', exchanges=active)
 
 
-# ── MARK EXCHANGE COMPLETE ────────────────────────────────
 @requests_bp.route('/exchange/complete/<int:exchange_id>')
 @login_required
 def complete_exchange(exchange_id):
@@ -192,13 +178,11 @@ def complete_exchange(exchange_id):
     flash('Exchange marked as completed! Don\'t forget to rate each other.', 'success')
     return redirect(url_for('requests_bp.exchanges'))
 
-# ── CANCEL A PENDING REQUEST ──────────────────────────────
 @requests_bp.route('/request/cancel/<int:request_id>')
 @login_required
 def cancel_request(request_id):
     req = Request.query.get_or_404(request_id)
 
-    # Only the sender can cancel
     if current_user.user_id != req.sender_id:
         flash('Only the sender can cancel a request.', 'error')
         return redirect(url_for('requests_bp.inbox'))
@@ -208,7 +192,6 @@ def cancel_request(request_id):
         flash('Only pending requests can be cancelled.', 'error')
         return redirect(url_for('requests_bp.inbox'))
 
-    # Delete related notifications
     Notification.query.filter_by(request_id=req.request_id).delete()
 
     db.session.delete(req)
@@ -217,19 +200,16 @@ def cancel_request(request_id):
     flash('Request cancelled successfully.', 'success')
     return redirect(url_for('requests_bp.inbox'))
 
-# ── CANCEL AN ACTIVE EXCHANGE ─────────────────────────────
 @requests_bp.route('/exchange/cancel/<int:exchange_id>')
 @login_required
 def cancel_exchange(exchange_id):
     exchange = Exchange.query.get_or_404(exchange_id)
     req      = exchange.request
 
-    # Only participants can cancel
     if current_user.user_id not in [req.sender_id, req.receiver_id]:
         flash('Unauthorized.', 'error')
         return redirect(url_for('requests_bp.exchanges'))
 
-    # Can only cancel active exchanges
     if exchange.status != 'active':
         flash('Only active exchanges can be cancelled.', 'error')
         return redirect(url_for('requests_bp.exchanges'))
@@ -237,7 +217,6 @@ def cancel_exchange(exchange_id):
     exchange.status = 'cancelled'
     req.status      = 'rejected'
 
-    # Notify the other person
     other_user_id = (
         req.receiver_id
         if current_user.user_id == req.sender_id

@@ -7,7 +7,6 @@ from app.models import User
 from app.models import UserSkill 
 
 
-# ── REGISTER ─────────────────────────────────────────────
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -19,7 +18,6 @@ def register():
         password         = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        # Validation
         if not name or not email or not password:
             flash('All fields are required.', 'error')
             return redirect(url_for('auth.register'))
@@ -47,9 +45,8 @@ def register():
             flash('An account with that email already exists.', 'error')
             return redirect(url_for('auth.register'))
 
-        # Create user
         hashed_password = generate_password_hash(password)
-        new_user = User(name=name, email=email, password=hashed_password, location=location)
+        new_user = User(name=name, email=email, password=hashed_password, location=location, role='user')
         db.session.add(new_user)
         db.session.commit()
 
@@ -59,7 +56,6 @@ def register():
     return render_template('auth/register.html')
 
 
-# ── LOGIN ─────────────────────────────────────────────────
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -82,7 +78,6 @@ def login():
     return render_template('auth/login.html')
 
 
-# ── LOGOUT ────────────────────────────────────────────────
 @auth.route('/logout')
 @login_required
 def logout():
@@ -92,7 +87,6 @@ def logout():
 
 
 
-# ── HOME ──────────────────────────────────────────────────
 @auth.route('/')
 @auth.route('/dashboard')
 @login_required

@@ -10,7 +10,6 @@
        class="btn btn-primary">+ Add Skill</a>
 </div>
 
-<!-- Search & Filter -->
 <div class="card" style="margin-bottom:1.5rem;">
     <form method="GET" style="display:flex; gap:1rem; align-items:flex-end;">
         <div style="flex:1;">
@@ -40,13 +39,11 @@
     </form>
 </div>
 
-<!-- Results -->
 {% if all_skills %}
 <p style="color:var(--muted); font-size:0.85rem; margin-bottom:1rem;">
     {{ all_skills|length }} skill{{ 's' if all_skills|length != 1 }} found
 </p>
 
-<!-- Group by category -->
 {% set current_cat = namespace(value='') %}
 {% for skill in all_skills %}
 

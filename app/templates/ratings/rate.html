@@ -12,7 +12,6 @@
 
         <label>Your Rating</label>
 
-        <!-- Star Rating UI -->
         <div id="star-container" style="display:flex; gap:0.5rem;
              margin-bottom:1.5rem; flex-direction:row-reverse;
              justify-content:flex-end;">
@@ -53,7 +52,6 @@
 </div>
 
 <style>
-    /* Star hover effect using CSS — row-reverse trick */
     .star { user-select: none; }
     .star.active { color: #ffaa3d !important; }
     .star.hovered { color: #ffaa3d !important; }
@@ -66,7 +64,6 @@
     let selectedRating = 0;
 
     stars.forEach(star => {
-        // Hover effect
         star.addEventListener('mouseenter', () => {
             const val = parseInt(star.dataset.value);
             stars.forEach(s => {
@@ -75,7 +72,6 @@
             });
         });
 
-        // Reset hover when leaving container
         star.addEventListener('mouseleave', () => {
             stars.forEach(s => {
                 s.style.color = parseInt(s.dataset.value) <= selectedRating
@@ -83,7 +79,6 @@
             });
         });
 
-        // Click to select
         star.addEventListener('click', () => {
             selectedRating = parseInt(star.dataset.value);
             ratingInput.value = selectedRating;
@@ -95,7 +90,6 @@
         });
     });
 
-    // Validate before submit
     document.getElementById('rating-form').addEventListener('submit', e => {
         if (!ratingInput.value) {
             e.preventDefault();

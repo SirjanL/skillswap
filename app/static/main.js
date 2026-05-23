@@ -1,5 +1,3 @@
-// ── THEME SYSTEM ──────────────────────────────────────────
-
 function applyTheme(theme) {
     if (theme === 'system') {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -21,18 +19,15 @@ function updateThemeButtons(theme) {
     });
 }
 
-// Apply theme immediately on page load
 const savedTheme = localStorage.getItem('skillswap-theme') || 'dark';
 applyTheme(savedTheme);
 
-// Listen for system theme changes
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (localStorage.getItem('skillswap-theme') === 'system') {
         applyTheme('system');
     }
 });
 
-// Init buttons after DOM loads
 document.addEventListener('DOMContentLoaded', () => {
     updateThemeButtons(savedTheme);
 
@@ -50,7 +45,6 @@ setTimeout(() => {
     });
 }, 4000);
 
-// Highlight active nav link
 document.querySelectorAll('.nav-links a').forEach(link => {
     if (link.href === window.location.href) {
         link.style.color = 'var(--text)';
@@ -59,7 +53,6 @@ document.querySelectorAll('.nav-links a').forEach(link => {
     }
 });
 
-// ── LIVE MESSAGING ────────────────────────────────────────
 const thread = document.getElementById('message-thread');
 
 function formatTime(isoString) {
@@ -75,13 +68,11 @@ if (thread) {
     const exchangeId = thread.dataset.exchangeId;
     const currentUserId = parseInt(thread.dataset.exchangeId);
 
-    // Scroll to bottom
     function scrollBottom() {
         thread.scrollTop = thread.scrollHeight;
     }
     scrollBottom();
 
-    // Render messages into the thread
     function renderMessages(messages) {
         thread.innerHTML = '';
         let lastDate = null;
@@ -95,7 +86,6 @@ if (thread) {
                 day:     'numeric'
             });
 
-            // Insert date separator if day changed
             if (dateStr !== lastDate) {
                 lastDate = dateStr;
                 const separator = document.createElement('div');
@@ -115,7 +105,6 @@ if (thread) {
                 thread.appendChild(separator);
             }
 
-            // Message bubble
             const wrapper = document.createElement('div');
             wrapper.style.cssText = `
                 display:flex;
@@ -142,7 +131,6 @@ if (thread) {
 
         scrollBottom();
     }
-    // Poll for new messages every 3 seconds
     function fetchMessages() {
         fetch(`/messages/${exchangeId}/poll`)
             .then(res => res.json())
@@ -150,11 +138,9 @@ if (thread) {
             .catch(err => console.error('Polling error:', err));
     }
 
-    // Start polling
     fetchMessages();
     setInterval(fetchMessages, 3000);
 
-    // Handle form submit without page reload
     const form = document.querySelector('#message-form');
     if (form) {
         form.addEventListener('submit', function(e) {
@@ -175,7 +161,6 @@ if (thread) {
     }
 }
 
-// ── LIVE NOTIFICATIONS ────────────────────────────────────
 function pollNotifications() {
     fetch('/notifications/poll')
         .then(res => res.json())
@@ -184,7 +169,6 @@ function pollNotifications() {
             const bellLink = document.querySelector('.nav-bell');
 
             if (data.count > 0) {
-                // Update or create badge
                 if (badge) {
                     badge.textContent = data.count;
                 } else {
@@ -194,26 +178,21 @@ function pollNotifications() {
                     bellLink.appendChild(newBadge);
                 }
 
-                // Show toast for the latest notification
                 const latest = data.notifications[0];
                 if (latest && latest.id !== lastNotifId) {
                     lastNotifId = latest.id;
                     showToast(latest);
                 }
             } else {
-                // Remove badge if no unread
                 if (badge) badge.remove();
             }
         })
         .catch(err => console.error('Notification poll error:', err));
 }
 
-// Track last seen notification to avoid duplicate toasts
 let lastNotifId = null;
 
-// Toast popup
 function showToast(notification) {
-    // Remove existing toast if any
     const existing = document.getElementById('notif-toast');
     if (existing) existing.remove();
 
@@ -259,14 +238,12 @@ function showToast(notification) {
                      line-height:1;">✕</span>
     `;
 
-    // Click toast to go to notifications page
     toast.addEventListener('click', () => {
         window.location.href = '/notifications';
     });
 
     document.body.appendChild(toast);
 
-    // Auto dismiss after 5 seconds
     setTimeout(() => {
         if (toast.parentNode) {
             toast.style.animation = 'slideOut 0.3s ease forwards';
@@ -275,6 +252,5 @@ function showToast(notification) {
     }, 5000);
 }
 
-// Start polling every 5 seconds
 pollNotifications();
 setInterval(pollNotifications, 5000);

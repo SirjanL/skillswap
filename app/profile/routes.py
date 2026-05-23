@@ -5,7 +5,6 @@ from app import db
 from app.models import User, Skill, UserSkill
 
 
-# ── VIEW PROFILE ──────────────────────────────────────────
 @profile.route('/profile')
 @login_required
 def view_profile():
@@ -33,7 +32,6 @@ def view_profile():
     )
 
 
-# ── EDIT PROFILE ──────────────────────────────────────────
 @profile.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -60,7 +58,6 @@ def edit_profile():
     return render_template('profile/edit_profile.html', user=current_user)
 
 
-# ── MANAGE SKILLS ─────────────────────────────────────────
 SKILL_CATEGORIES = {
     'Tech & Development': [
         'Programming', 'Web Development', 'Mobile Development', 
@@ -152,13 +149,11 @@ def manage_skills():
     )
 
 
-# ── DELETE A SKILL ────────────────────────────────────────
 @profile.route('/profile/skills/delete/<int:user_skill_id>')
 @login_required
 def delete_skill(user_skill_id):
     user_skill = UserSkill.query.get_or_404(user_skill_id)
 
-    # Make sure users can only delete their own skills
     if user_skill.user_id != current_user.user_id:
         flash('Unauthorized action.', 'error')
         return redirect(url_for('profile.manage_skills'))
@@ -168,7 +163,6 @@ def delete_skill(user_skill_id):
     flash('Skill removed.', 'success')
     return redirect(url_for('profile.manage_skills'))
 
-# ── DELETE OWN ACCOUNT ────────────────────────────────────
 @profile.route('/profile/delete', methods=['POST'])
 @login_required
 def delete_account():
@@ -200,7 +194,6 @@ def delete_account():
             )
         ).delete()
 
-        # Delete exchanges and related records for this user's requests
         user_requests = Request.query.filter(
             db.or_(
                 Request.sender_id == user_id,
@@ -222,10 +215,8 @@ def delete_account():
             ).delete()
             db.session.delete(req)
 
-        # Delete user skills
         UserSkill.query.filter_by(user_id=user_id).delete()
 
-        # Delete the user
         user = User.query.get(user_id)
         db.session.delete(user)
         db.session.commit()
@@ -239,7 +230,6 @@ def delete_account():
 
     return redirect(url_for('auth.register'))
 
-# ── EDIT A SKILL ──────────────────────────────────────────
 @profile.route('/profile/skills/edit/<int:user_skill_id>', methods=['GET', 'POST'])
 @login_required
 def edit_skill(user_skill_id):

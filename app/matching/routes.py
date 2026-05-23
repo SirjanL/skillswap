@@ -4,16 +4,7 @@ from app.matching import matching
 from app.models import User, UserSkill, Skill
 
 
-# ── HELPER: core matching algorithm ──────────────────────
 def get_matches(current_user_id):
-    """
-    Find users who:
-      - offer at least one skill that I want
-      - AND want at least one skill that I offer
-    Returns a list of dicts with match info.
-    """
-
-    # Get current user's offered and wanted skill IDs
     my_offered_skill_ids = {
         us.skill_id for us in
         UserSkill.query.filter_by(user_id=current_user_id, type='offer').all()
@@ -23,13 +14,11 @@ def get_matches(current_user_id):
         UserSkill.query.filter_by(user_id=current_user_id, type='want').all()
     }
 
-    # Can't match if user hasn't added any skills
     if not my_offered_skill_ids or not my_wanted_skill_ids:
         return []
 
     matches = []
 
-    # Get all other users
     other_users = User.query.filter(
         User.user_id != current_user_id,
         User.is_active == True
@@ -45,16 +34,12 @@ def get_matches(current_user_id):
             UserSkill.query.filter_by(user_id=user.user_id, type='want').all()
         }
 
-        # Skills they offer that I want
         they_can_teach_me = my_wanted_skill_ids & their_offered_skill_ids
 
-        # Skills I offer that they want
         i_can_teach_them = my_offered_skill_ids & their_wanted_skill_ids
 
-        # Only a match if BOTH sides have something to exchange
         if they_can_teach_me and i_can_teach_them:
 
-            # Get full skill objects for display
             teach_me_skills = Skill.query.filter(
                 Skill.skill_id.in_(they_can_teach_me)
             ).all()
@@ -62,7 +47,6 @@ def get_matches(current_user_id):
                 Skill.skill_id.in_(i_can_teach_them)
             ).all()
 
-            # Match score = total overlapping skills (more = better match)
             score = len(they_can_teach_me) + len(i_can_teach_them)
 
             matches.append({
@@ -72,12 +56,10 @@ def get_matches(current_user_id):
                 'score': score
             })
 
-    # Sort by best match first
     matches.sort(key=lambda x: x['score'], reverse=True)
     return matches
 
 
-# ── DISCOVER PAGE ─────────────────────────────────────────
 @matching.route('/discover')
 @login_required
 def discover():
@@ -101,8 +83,6 @@ def discover():
         search=search
     )
 
-
-# ── VIEW ANOTHER USER'S PROFILE ───────────────────────────
 @matching.route('/user/<int:user_id>')
 @login_required
 def user_detail(user_id):

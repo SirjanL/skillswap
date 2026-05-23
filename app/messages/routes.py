@@ -7,7 +7,6 @@ from flask import jsonify
 
 
 
-# ── MESSAGES INBOX ────────────────────────────────────────
 @messages.route('/messages')
 @login_required
 def inbox():
@@ -19,7 +18,6 @@ def inbox():
         )
     ).all()
 
-    # Deduplicate — keep only one conversation per other user
     seen_user_ids = set()
     conversations = []
 
@@ -55,14 +53,12 @@ def inbox():
 
 
 
-# ── CONVERSATION VIEW ─────────────────────────────────────
 @messages.route('/messages/<int:exchange_id>', methods=['GET', 'POST'])
 @login_required
 def conversation(exchange_id):
     exchange = Exchange.query.get_or_404(exchange_id)
     req      = exchange.request
 
-    # Only participants can view
     if current_user.user_id not in [req.sender_id, req.receiver_id]:
         flash('Unauthorized.', 'error')
         return redirect(url_for('messages.inbox'))
@@ -94,7 +90,6 @@ def conversation(exchange_id):
             'messages.conversation', exchange_id=exchange_id
         ))
 
-    # Mark all received messages as read
     unread_msgs = Message.query.filter_by(
         exchange_id=exchange_id,
         receiver_id=current_user.user_id,

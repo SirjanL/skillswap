@@ -6,7 +6,6 @@ from app.models import Notification
 from flask import jsonify
 
 
-# ── VIEW ALL NOTIFICATIONS ────────────────────────────────
 @notifications.route('/notifications')
 @login_required
 def view_notifications():
@@ -20,7 +19,6 @@ def view_notifications():
         n.is_read = True
     db.session.commit()
 
-    # Fetch all notifications newest first
     all_notifications = Notification.query.filter_by(
         user_id=current_user.user_id
     ).order_by(Notification.created_at.desc()).all()
@@ -31,7 +29,6 @@ def view_notifications():
     )
 
 
-# ── MARK SINGLE NOTIFICATION AS READ + REDIRECT ──────────
 @notifications.route('/notifications/read/<int:notification_id>')
 @login_required
 def mark_read(notification_id):
@@ -43,7 +40,6 @@ def mark_read(notification_id):
     n.is_read = True
     db.session.commit()
 
-    # Redirect to the relevant request if possible
     if n.request_id:
         return redirect(url_for(
             'requests_bp.request_detail',

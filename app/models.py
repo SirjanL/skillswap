@@ -2,13 +2,11 @@ from app import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
 
-# Required by Flask-Login to load a user from the session
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-# ── 1. USER ──────────────────────────────────────────────
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
@@ -21,7 +19,6 @@ class User(db.Model, UserMixin):
     is_active  = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Relationships
     user_skills        = db.relationship('UserSkill', backref='user', lazy=True)
     sent_requests      = db.relationship('Request', foreign_keys='Request.sender_id',   backref='sender',   lazy=True)
     received_requests  = db.relationship('Request', foreign_keys='Request.receiver_id', backref='receiver', lazy=True)
@@ -29,7 +26,6 @@ class User(db.Model, UserMixin):
     sent_messages      = db.relationship('Message', foreign_keys='Message.sender_id',   backref='sender',   lazy=True)
     received_messages  = db.relationship('Message', foreign_keys='Message.receiver_id', backref='receiver', lazy=True)
 
-    # Flask-Login needs this to be 'user_id' not default 'id'
     def get_id(self):
         return str(self.user_id)
 
@@ -37,7 +33,6 @@ class User(db.Model, UserMixin):
         return f'<User {self.name}>'
 
 
-# ── 2. SKILL ─────────────────────────────────────────────
 class Skill(db.Model):
     __tablename__ = 'skills'
 
@@ -52,7 +47,6 @@ class Skill(db.Model):
         return f'<Skill {self.skill_name}>'
 
 
-# ── 3. USER_SKILLS (junction table) ──────────────────────
 class UserSkill(db.Model):
     __tablename__ = 'user_skills'
 
@@ -66,7 +60,6 @@ class UserSkill(db.Model):
         return f'<UserSkill user={self.user_id} skill={self.skill_id} type={self.type}>'
 
 
-# ── 4. REQUEST ────────────────────────────────────────────
 class Request(db.Model):
     __tablename__ = 'requests'
 
@@ -89,7 +82,6 @@ class Request(db.Model):
         return f'<Request {self.request_id} status={self.status}>'
 
 
-# ── 5. EXCHANGE ───────────────────────────────────────────
 class Exchange(db.Model):
     __tablename__ = 'exchanges'
 
@@ -106,7 +98,6 @@ class Exchange(db.Model):
         return f'<Exchange {self.exchange_id} status={self.status}>'
 
 
-# ── 6. RATING ─────────────────────────────────────────────
 class Rating(db.Model):
     __tablename__ = 'ratings'
 
@@ -123,7 +114,6 @@ class Rating(db.Model):
         return f'<Rating {self.rating_id} rating={self.rating}>'
 
 
-# ── 7. NOTIFICATION ───────────────────────────────────────
 class Notification(db.Model):
     __tablename__ = 'notifications'
 
@@ -139,7 +129,6 @@ class Notification(db.Model):
         return f'<Notification {self.notification_id} type={self.type}>'
 
 
-# ── 8. MESSAGE ────────────────────────────────────────────
 class Message(db.Model):
     __tablename__ = 'messages'
 
@@ -154,7 +143,6 @@ class Message(db.Model):
     def __repr__(self):
         return f'<Message {self.message_id}>'
     
-# ── 9. ADMIN ──────────────────────────────────────────────
 class Admin(db.Model):
     __tablename__ = 'admins'
 

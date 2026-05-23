@@ -4,7 +4,6 @@
 {% block content %}
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
     <h2>
-        <!-- Search Bar -->
         <div class="card" style="margin-bottom:1.5rem; padding:1rem 1.25rem;">
             <form method="GET" style="display:flex; gap:0.75rem; align-items:center;">
                 <input type="text" name="q" value="{{ search }}"
@@ -42,7 +41,6 @@
     <div class="card" style="margin-bottom:1rem;">
         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
 
-            <!-- User Info -->
             <div>
                 <h3>
                     <a href="{{ url_for('matching.user_detail', user_id=match.user.user_id) }}"
@@ -58,7 +56,6 @@
                 </p>
             </div>
 
-            <!-- Match Score Badge -->
             <div style="text-align:center; background:#1abc9c; color:white;
                         padding:0.5rem 1rem; border-radius:8px; min-width:80px;">
                 <div style="font-size:1.4rem; font-weight:bold;">{{ match.score }}</div>
@@ -84,7 +81,6 @@
                 {% endfor %}
             </div>
 
-            <!-- I can teach them -->
             <div>
                 <p style="font-size:0.85rem; font-weight:bold; color:#e67e22; margin-bottom:0.4rem;">
                     You can teach them:

@@ -15,14 +15,18 @@
             }
         })();
     </script>    
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;450;500;600;700&display=swap" rel="stylesheet">    
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <nav>
-    <a href="/" class="brand">⟳ SkillSwap</a>
+    <a href="/" class="brand" style="display:flex; align-items:center; gap:0.5rem;">
+        <img src="{{ url_for('static', filename='logo.png') }}"
+            alt="SkillSwap"
+            style="height:32px; width:32px; object-fit:contain;">
+        SkillSwap
+    </a>
     <div class="nav-links">
         {% if current_user.is_authenticated %}
             <a href="{{ url_for('matching.discover') }}">Discover</a>
@@ -51,7 +55,7 @@
             style="color:var(--accent); font-weight:600;">
                 👤 {{ current_user.name }}
             </a>
-            <!-- Theme Switcher -->
+
             <div class="theme-switcher">
                 <button class="theme-btn" data-theme="light">☀️</button>
                 <button class="theme-btn" data-theme="dark">🌙</button>

@@ -33,7 +33,6 @@
     </div>
     {% endif %}
 
-    <!-- Status Badge -->
     <div style="margin-bottom:1.5rem;">
         <b>Status:</b>
         <span class="badge-{{ req.status }}"
@@ -42,7 +41,6 @@
         </span>
     </div>
 
-    <!-- Accept / Reject buttons (only for receiver, only if pending) -->
     {% if current_user.user_id == req.receiver_id and req.status == 'pending' %}
     <form method="POST" style="display:flex; gap:1rem;">
         <button type="submit" name="action" value="accept"
