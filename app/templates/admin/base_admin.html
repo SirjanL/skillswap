@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // Apply theme before page renders to avoid flash
+        (function() {
+            const theme = localStorage.getItem('skillswap-theme') || 'dark';
+            if (theme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        })();
+    </script>    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap Admin {% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        [data-theme="light"] {
+            --bg:        #f4f3ef;
+            --surface:   #ffffff;
+            --surface2:  #f0efe9;
+            --border:    #e2e0d8;
+            --text:      #1a1a1a;
+            --muted:     #6b6b6b;
+            --green:     #1a6b3c;
+            --green-bg:  #e8f5ee;
+            --red:       #8b1a1a;
+            --red-bg:    #fdf0f0;
+            --orange:    #8b5a1a;
+            --orange-bg: #fdf5e8;
+        }
+
+        [data-theme="dark"] {
+            --bg:        #0f1117;
+            --surface:   #1a1d27;
+            --surface2:  #222536;
+            --border:    #2e3248;
+            --text:      #eef0f8;
+            --muted:     #7b809a;
+            --green:     #3dffa0;
+            --green-bg:  rgba(61,255,160,0.1);
+            --red:       #ff6a8e;
+            --red-bg:    rgba(255,106,142,0.1);
+            --orange:    #ffaa3d;
+            --orange-bg: rgba(255,170,61,0.1);
+        }        
+        :root {
+            --bg:        #f4f3ef;
+            --surface:   #ffffff;
+            --surface2:  #f0efe9;
+            --border:    #e2e0d8;
+            --accent:    #1a1a2e;
+            --accent2:   #4a4a8a;
+            --green:     #1a6b3c;
+            --green-bg:  #e8f5ee;
+            --red:       #8b1a1a;
+            --red-bg:    #fdf0f0;
+            --orange:    #8b5a1a;
+            --orange-bg: #fdf5e8;
+            --text:      #1a1a1a;
+            --muted:     #6b6b6b;
+            --mono:      'IBM Plex Mono', monospace;
+            --sans:      'IBM Plex Sans', sans-serif;
+        }
+
+        * { box-sizing:border-box; margin:0; padding:0; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            min-height: 100vh;
+            font-size: 14px;
+        }
+
+        /* ── SIDEBAR ─────────────────────────── */
+        .sidebar {
+            width: 220px;
+            background: var(--accent);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1.25rem 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar-brand {
+            font-family: var(--mono);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-sub {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 0.2rem;
+            font-family: var(--mono);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0.75rem;
+            flex: 1;
+        }
+
+        .nav-section {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-family: var(--mono);
+            padding: 0.75rem 0.5rem 0.4rem;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            padding: 0.55rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 400;
+            transition: all 0.15s;
+            margin-bottom: 0.1rem;
+        }
+
+        .sidebar a:hover {
+            color: white;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .sidebar a.active {
+            color: white;
+            background: rgba(255,255,255,0.12);
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 0.75rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .sidebar a.logout {
+            color: rgba(255,100,100,0.7);
+        }
+        .sidebar a.logout:hover {
+            color: #ff6464;
+            background: rgba(255,100,100,0.08);
+        }
+
+        /* ── MAIN ────────────────────────────── */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar-title {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--muted);
+            letter-spacing: 0.04em;
+        }
+
+        .topbar-admin {
+            font-size: 0.8rem;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-dot {
+            width: 7px; height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+        }
+
+        .content {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        /* ── PAGE HEADER ─────────────────────── */
+        .page-header {
+            margin-bottom: 1.75rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .page-header h1 {
+            font-family: var(--mono);
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ── CARDS ───────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        /* ── STAT CARDS ──────────────────────── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .stat-label {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.6rem;
+        }
+
+        .stat-value {
+            font-family: var(--mono);
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .stat-sub {
+            font-size: 0.72rem;
+            color: var(--muted);
+            margin-top: 0.4rem;
+        }
+
+        /* ── TABLE ───────────────────────────── */
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        thead { background: var(--surface2); }
+
+        th {
+            text-align: left;
+            padding: 0.7rem 1rem;
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.83rem;
+            color: var(--text);
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: var(--surface2); }
+
+        /* ── BUTTONS ─────────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.35rem 0.85rem;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.15s;
+            font-family: var(--sans);
+        }
+
+        .btn-danger {
+            background: var(--red-bg);
+            color: var(--red);
+            border-color: #f0d0d0;
+        }
+        .btn-danger:hover {
+            background: #fae0e0;
+            border-color: #e0b0b0;
+        }
+
+        .btn-success {
+            background: var(--green-bg);
+            color: var(--green);
+            border-color: #c0e8d0;
+        }
+        .btn-success:hover {
+            background: #d0f0e0;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .btn-primary:hover {
+            background: var(--accent2);
+            border-color: var(--accent2);
+        }
+
+        /* ── BADGES ──────────────────────────── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: var(--mono);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .badge-active, .badge-enabled {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+        .badge-inactive, .badge-disabled, .badge-cancelled {
+            background: #f0f0f0;
+            color: var(--muted);
+        }
+        .badge-pending {
+            background: var(--orange-bg);
+            color: var(--orange);
+        }
+        .badge-completed {
+            background: #e8eef8;
+            color: #1a3a8b;
+        }
+        .badge-rejected {
+            background: var(--red-bg);
+            color: var(--red);
+        }
+
+        /* ── ALERTS ──────────────────────────── */
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.82rem;
+            border: 1px solid transparent;
+        }
+        .alert-error {
+            background: var(--red-bg);
+            color: var(--red);
+            border-color: #f0d0d0;
+        }
+        .alert-success {
+            background: var(--green-bg);
+            color: var(--green);
+            border-color: #c0e8d0;
+        }
+
+        /* ── FORMS ───────────────────────────── */
+        input, select {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            padding: 0.6rem 0.8rem;
+            font-size: 0.85rem;
+            font-family: var(--sans);
+            margin-bottom: 1.1rem;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        input:focus, select:focus {
+            border-color: var(--accent2);
+        }
+        input::placeholder { color: #aaa; }
+
+        label {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--muted);
+            font-family: var(--mono);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.35rem;
+            font-weight: 500;
+        }
+
+        /* ── QUICK ACTION CARDS ──────────────── */
+        .action-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-decoration: none;
+            color: var(--text);
+            display: block;
+            transition: all 0.15s;
+        }
+        .action-card:hover {
+            border-color: var(--accent2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transform: translateY(-1px);
+        }
+        .action-card-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.6rem;
+        }
+        .action-card-title {
+            font-family: var(--mono);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+        }
+        .action-card-sub {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-brand">⟳ SkillSwap</div>
+        <div class="sidebar-sub">Admin Console</div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section">Main</div>
+        <a href="{{ url_for('admin.dashboard') }}">
+            <span>▪</span> Dashboard
+        </a>
+        <a href="{{ url_for('admin.users') }}">
+            <span>▪</span> User Management
+        </a>
+        <a href="{{ url_for('admin.skills') }}">
+            <span>▪</span> Skills Management
+        </a>
+        <a href="{{ url_for('admin.exchanges') }}">
+            <span>▪</span> Exchanges Management
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{{ url_for('admin.logout') }}" class="logout">
+            <span>→</span> Logout
+        </a>
+    </div>
+</aside>
+
+
+
+<div class="main">
+    <div class="topbar">
+        <span class="topbar-title">
+            {% block topbar_title %}Admin Console{% endblock %}
+        </span>
+        <div class="topbar-admin">
+                <div class="theme-switcher" style="margin-right:1rem;">
+                    <button class="theme-btn" data-theme="light"
+                            onclick="setTheme('light')" style="cursor:pointer;">☀️</button>
+                    <button class="theme-btn" data-theme="dark"
+                            onclick="setTheme('dark')" style="cursor:pointer;">🌙</button>
+                    <button class="theme-btn" data-theme="system"
+                            onclick="setTheme('system')" style="cursor:pointer;">⚙️</button>
+                </div>
+            <div class="admin-dot"></div>
+            {{ session.admin_name }}
+        </div>
+    </div>
+
+    <script>
+        function applyTheme(theme) {
+            if (theme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        }
+
+        function setTheme(theme) {
+            localStorage.setItem('skillswap-theme', theme);
+            applyTheme(theme);
+            updateThemeButtons(theme);
+        }
+
+        function updateThemeButtons(theme) {
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('skillswap-theme') || 'dark';
+            updateThemeButtons(saved);
+        });
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            if (localStorage.getItem('skillswap-theme') === 'system') applyTheme('system');
+        });
+    </script>    
+
+    <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+</body>
+</html>

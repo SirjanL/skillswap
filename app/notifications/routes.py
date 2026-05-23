@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app.notifications import notifications
 from app import db
 from app.models import Notification
+from flask import jsonify
 
 
 # ── VIEW ALL NOTIFICATIONS ────────────────────────────────
@@ -50,3 +51,23 @@ def mark_read(notification_id):
         ))
 
     return redirect(url_for('notifications.view_notifications'))
+
+
+@notifications.route('/notifications/poll')
+@login_required
+def poll_notifications():
+    unread = Notification.query.filter_by(
+        user_id=current_user.user_id,
+        is_read=False
+    ).order_by(Notification.created_at.desc()).all()
+
+    return jsonify({
+        'count': len(unread),
+        'notifications': [{
+            'id':         n.notification_id,
+            'message':    n.message,
+            'type':       n.type,
+            'request_id': n.request_id,
+            'time':       n.created_at.isoformat()
+        } for n in unread]
+    })

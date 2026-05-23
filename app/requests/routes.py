@@ -4,6 +4,7 @@ from app.requests import requests_bp
 from app import db
 from app.models import User, UserSkill, Request, Exchange, Notification
 from app.matching.routes import get_matches
+from flask import jsonify
 
 
 # ── SEND REQUEST PAGE ─────────────────────────────────────
@@ -163,9 +164,8 @@ def request_detail(request_id):
 @requests_bp.route('/exchanges')
 @login_required
 def exchanges():
-    # Find all accepted requests involving current user
     active = Request.query.filter(
-        Request.status == 'accepted',
+        Request.status.in_(['accepted', 'rejected']),
         db.or_(
             Request.sender_id == current_user.user_id,
             Request.receiver_id == current_user.user_id
@@ -191,3 +191,90 @@ def complete_exchange(exchange_id):
 
     flash('Exchange marked as completed! Don\'t forget to rate each other.', 'success')
     return redirect(url_for('requests_bp.exchanges'))
+
+# ── CANCEL A PENDING REQUEST ──────────────────────────────
+@requests_bp.route('/request/cancel/<int:request_id>')
+@login_required
+def cancel_request(request_id):
+    req = Request.query.get_or_404(request_id)
+
+    # Only the sender can cancel
+    if current_user.user_id != req.sender_id:
+        flash('Only the sender can cancel a request.', 'error')
+        return redirect(url_for('requests_bp.inbox'))
+
+    # Can only cancel pending requests
+    if req.status != 'pending':
+        flash('Only pending requests can be cancelled.', 'error')
+        return redirect(url_for('requests_bp.inbox'))
+
+    # Delete related notifications
+    Notification.query.filter_by(request_id=req.request_id).delete()
+
+    db.session.delete(req)
+    db.session.commit()
+
+    flash('Request cancelled successfully.', 'success')
+    return redirect(url_for('requests_bp.inbox'))
+
+# ── CANCEL AN ACTIVE EXCHANGE ─────────────────────────────
+@requests_bp.route('/exchange/cancel/<int:exchange_id>')
+@login_required
+def cancel_exchange(exchange_id):
+    exchange = Exchange.query.get_or_404(exchange_id)
+    req      = exchange.request
+
+    # Only participants can cancel
+    if current_user.user_id not in [req.sender_id, req.receiver_id]:
+        flash('Unauthorized.', 'error')
+        return redirect(url_for('requests_bp.exchanges'))
+
+    # Can only cancel active exchanges
+    if exchange.status != 'active':
+        flash('Only active exchanges can be cancelled.', 'error')
+        return redirect(url_for('requests_bp.exchanges'))
+
+    exchange.status = 'cancelled'
+    req.status      = 'rejected'
+
+    # Notify the other person
+    other_user_id = (
+        req.receiver_id
+        if current_user.user_id == req.sender_id
+        else req.sender_id
+    )
+
+    notification = Notification(
+        user_id=other_user_id,
+        request_id=req.request_id,
+        type='rejected',
+        message=f'{current_user.name} cancelled your skill exchange.'
+    )
+    db.session.add(notification)
+    db.session.commit()
+
+    flash('Exchange cancelled successfully.', 'success')
+    return redirect(url_for('requests_bp.exchanges'))
+
+@requests_bp.route('/inbox/poll')
+@login_required
+def poll_inbox():
+    pending_received = Request.query.filter_by(
+        receiver_id=current_user.user_id,
+        status='pending'
+    ).count()
+
+    return jsonify({'pending_count': pending_received})
+
+@requests_bp.route('/exchanges/poll')
+@login_required
+def poll_exchanges():
+    active_count = Request.query.filter(
+        Request.status == 'accepted',
+        db.or_(
+            Request.sender_id == current_user.user_id,
+            Request.receiver_id == current_user.user_id
+        )
+    ).count()
+
+    return jsonify({'active_count': active_count})

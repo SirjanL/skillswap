@@ -70,10 +70,17 @@
                 style="padding:0.2rem 0.8rem; border-radius:20px; font-size:0.8rem;">
                 {{ req.status }}
             </span>
-                <a href="{{ url_for('requests_bp.request_detail', request_id=req.request_id) }}"
-                   class="btn btn-primary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">
-                   View
-                </a>
+            <a href="{{ url_for('requests_bp.request_detail', request_id=req.request_id) }}"
+            class="btn btn-primary" style="font-size:0.85rem; padding:0.4rem 0.8rem;">
+            View
+            </a>
+            {% if req.status == 'pending' %}
+            <a href="{{ url_for('requests_bp.cancel_request', request_id=req.request_id) }}"
+            class="btn btn-danger" style="font-size:0.85rem; padding:0.4rem 0.8rem;"
+            onclick="return confirm('Cancel this request?')">
+            Cancel
+            </a>
+            {% endif %}
             </div>
         </div>
         {% endfor %}

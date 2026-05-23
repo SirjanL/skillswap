@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}— Edit Skill{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:480px; margin:auto;">
+
+    <div style="display:flex; justify-content:space-between;
+                align-items:center; margin-bottom:1.5rem;">
+        <h2>✏️ Edit Skill</h2>
+        <a href="{{ url_for('profile.manage_skills') }}"
+           style="color:var(--muted); font-size:0.9rem;">
+            ← Back
+        </a>
+    </div>
+
+    <div style="background:var(--surface2); border:1px solid var(--border);
+                border-radius:8px; padding:0.75rem 1rem; margin-bottom:1.5rem;">
+        <span style="font-weight:600; font-size:1rem;">
+            {{ user_skill.skill.skill_name }}
+        </span>
+        <span style="color:var(--muted); font-size:0.85rem; margin-left:0.5rem;">
+            · {{ user_skill.skill.category }}
+        </span>
+    </div>
+
+    <form method="POST">
+
+        <label>Type</label>
+        <select name="skill_type">
+            <option value="offer"
+                {% if user_skill.type == 'offer' %}selected{% endif %}>
+                I can Offer this skill
+            </option>
+            <option value="want"
+                {% if user_skill.type == 'want' %}selected{% endif %}>
+                I want to Learn this skill
+            </option>
+        </select>
+
+        <label>Level</label>
+        <select name="level">
+            <option value="beginner"
+                {% if user_skill.level == 'beginner' %}selected{% endif %}>
+                Beginner
+            </option>
+            <option value="intermediate"
+                {% if user_skill.level == 'intermediate' %}selected{% endif %}>
+                Intermediate
+            </option>
+            <option value="advanced"
+                {% if user_skill.level == 'advanced' %}selected{% endif %}>
+                Advanced
+            </option>
+        </select>
+
+        <div style="display:flex; gap:1rem; margin-top:0.5rem;">
+            <button type="submit" class="btn btn-primary">
+                Save Changes
+            </button>
+            <a href="{{ url_for('profile.manage_skills') }}"
+               style="color:var(--muted); padding:0.6rem 0;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

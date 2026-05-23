@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}— Browse Skills{% endblock %}
+
+{% block content %}
+
+<div style="display:flex; justify-content:space-between;
+            align-items:center; margin-bottom:1.5rem;">
+    <h2>🎯 Browse Skills</h2>
+    <a href="{{ url_for('profile.manage_skills') }}"
+       class="btn btn-primary">+ Add Skill</a>
+</div>
+
+<!-- Search & Filter -->
+<div class="card" style="margin-bottom:1.5rem;">
+    <form method="GET" style="display:flex; gap:1rem; align-items:flex-end;">
+        <div style="flex:1;">
+            <label>Search</label>
+            <input type="text" name="q" value="{{ search }}"
+                   placeholder="e.g. Python, Guitar..."
+                   style="margin-bottom:0;">
+        </div>
+        <div style="width:200px;">
+            <label>Category</label>
+            <select name="category" style="margin-bottom:0;">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                <option value="{{ cat }}"
+                    {% if cat == category %}selected{% endif %}>
+                    {{ cat }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary"
+                style="margin-bottom:0;">Search</button>
+        {% if search or category %}
+        <a href="{{ url_for('skills.browse') }}"
+           class="btn btn-ghost" style="margin-bottom:0;">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Results -->
+{% if all_skills %}
+<p style="color:var(--muted); font-size:0.85rem; margin-bottom:1rem;">
+    {{ all_skills|length }} skill{{ 's' if all_skills|length != 1 }} found
+</p>
+
+<!-- Group by category -->
+{% set current_cat = namespace(value='') %}
+{% for skill in all_skills %}
+
+    {% if skill.category != current_cat.value %}
+        {% if not loop.first %}</div>{% endif %}
+        {% set current_cat.value = skill.category %}
+        <h3 style="color:var(--muted); font-size:0.78rem; font-weight:600;
+                   text-transform:uppercase; letter-spacing:0.08em;
+                   margin:1.5rem 0 0.75rem;">
+            {{ skill.category }}
+        </h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:0.75rem;">
+    {% endif %}
+
+    <a href="{{ url_for('skills.skill_detail', skill_id=skill.skill_id) }}"
+       style="text-decoration:none;">
+        <div class="card" style="padding:1rem; cursor:pointer;
+                                  transition:transform 0.2s;"
+             onmouseover="this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.transform='translateY(0)'">
+            <div style="display:flex; justify-content:space-between;
+                        align-items:flex-start;">
+                <b style="font-size:0.95rem;">{{ skill.skill_name }}</b>
+                {% if skill.skill_id in my_skill_ids %}
+                    <span style="background:rgba(124,106,255,0.15);
+                                 color:var(--accent); padding:0.1rem 0.5rem;
+                                 border-radius:20px; font-size:0.7rem;">
+                        Mine
+                    </span>
+                {% endif %}
+            </div>
+            <div style="margin-top:0.5rem; display:flex; gap:0.5rem;">
+                <span style="color:var(--green); font-size:0.78rem;">
+                    ↑ {{ skill.user_skills | selectattr('type','equalto','offer') | list | length }} offering
+                </span>
+                <span style="color:var(--orange); font-size:0.78rem;">
+                    ↓ {{ skill.user_skills | selectattr('type','equalto','want') | list | length }} wanting
+                </span>
+            </div>
+        </div>
+    </a>
+
+    {% if loop.last %}</div>{% endif %}
+
+{% endfor %}
+
+{% else %}
+<div class="card" style="text-align:center; padding:3rem;">
+    <h3 style="color:var(--muted);">No skills found 🔍</h3>
+    <p style="color:var(--muted); margin:1rem 0;">
+        Try a different search term or category.
+    </p>
+    <a href="{{ url_for('skills.browse') }}"
+       class="btn btn-primary">Clear Search</a>
+</div>
+{% endif %}
+
+{% endblock %}

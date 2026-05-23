@@ -3,6 +3,8 @@ from flask_login import login_required, current_user
 from app.messages import messages
 from app import db
 from app.models import Message, Exchange, Request, User
+from flask import jsonify
+
 
 
 # ── MESSAGES INBOX ────────────────────────────────────────
@@ -112,3 +114,33 @@ def conversation(exchange_id):
         other=other,
         all_messages=all_messages
     )
+
+@messages.route('/messages/<int:exchange_id>/poll')
+@login_required
+def poll_messages(exchange_id):
+    exchange = Exchange.query.get_or_404(exchange_id)
+    req = exchange.request
+
+    if current_user.user_id not in [req.sender_id, req.receiver_id]:
+        return jsonify([])
+
+    all_messages = Message.query.filter_by(
+        exchange_id=exchange_id
+    ).order_by(Message.timestamp.asc()).all()
+
+    return jsonify([{
+        'content':   m.content,
+        'sender_id': m.sender_id,
+        'time':      m.timestamp.isoformat(),
+        'is_mine':   m.sender_id == current_user.user_id
+    } for m in all_messages])
+
+messages.route('/messages/poll/unread')
+@login_required
+def poll_unread_messages():
+    unread = Message.query.filter_by(
+        receiver_id=current_user.user_id,
+        is_read=False
+    ).count()
+
+    return jsonify({'unread_count': unread})

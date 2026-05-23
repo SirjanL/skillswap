@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}— {{ skill.skill_name }}{% endblock %}
+
+{% block content %}
+
+<div class="card" style="margin-bottom:1.25rem;">
+    <div style="display:flex; justify-content:space-between;
+                align-items:flex-start;">
+        <div>
+            <h2 style="margin-bottom:0.3rem;">{{ skill.skill_name }}</h2>
+            <span style="background:var(--surface2); color:var(--muted);
+                         padding:0.2rem 0.7rem; border-radius:20px;
+                         font-size:0.8rem;">
+                {{ skill.category }}
+            </span>
+            {% if skill.description %}
+            <p style="margin-top:0.75rem; color:#c0c4d8;">
+                {{ skill.description }}
+            </p>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('skills.browse') }}"
+           style="color:var(--muted); font-size:0.9rem;">← Back</a>
+    </div>
+
+    <hr style="margin:1rem 0;">
+
+    <div style="display:flex; gap:1.5rem;">
+        <div style="text-align:center;">
+            <div style="font-size:1.5rem; font-weight:700;
+                        color:var(--green); font-family:'Syne',sans-serif;">
+                {{ offering|length }}
+            </div>
+            <div style="color:var(--muted); font-size:0.78rem;
+                        text-transform:uppercase; letter-spacing:0.05em;">
+                Offering
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <div style="font-size:1.5rem; font-weight:700;
+                        color:var(--orange); font-family:'Syne',sans-serif;">
+                {{ wanting|length }}
+            </div>
+            <div style="color:var(--muted); font-size:0.78rem;
+                        text-transform:uppercase; letter-spacing:0.05em;">
+                Wanting
+            </div>
+        </div>
+    </div>
+
+    {% if my_user_skill %}
+    <div style="margin-top:1rem; background:rgba(124,106,255,0.1);
+                border:1px solid rgba(124,106,255,0.25);
+                border-radius:8px; padding:0.75rem 1rem;
+                font-size:0.875rem; color:var(--accent);">
+        You have this skill as
+        <b>{{ my_user_skill.type }}</b> —
+        {{ my_user_skill.level }}
+        <a href="{{ url_for('profile.edit_skill', user_skill_id=my_user_skill.id) }}"
+           style="margin-left:0.5rem; color:var(--accent); font-weight:600;">
+            Edit
+        </a>
+    </div>
+    {% else %}
+    <div style="margin-top:1rem;">
+        <a href="{{ url_for('profile.manage_skills') }}"
+           class="btn btn-primary">+ Add to My Skills</a>
+    </div>
+    {% endif %}
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+
+    <!-- Users Offering -->
+    <div class="card">
+        <h3 style="color:var(--green); margin-bottom:1rem;">
+            ✅ Users Offering
+        </h3>
+        {% if offering %}
+            {% for us in offering %}
+            <a href="{{ url_for('matching.user_detail', user_id=us.user.user_id) }}"
+               style="text-decoration:none;">
+                <div style="background:var(--surface2);
+                            border:1px solid var(--border);
+                            border-radius:8px; padding:0.7rem 1rem;
+                            margin-bottom:0.5rem; display:flex;
+                            justify-content:space-between; align-items:center;">
+                    <div>
+                        <b style="color:var(--text);">{{ us.user.name }}</b>
+                        <span style="color:var(--muted); font-size:0.8rem;
+                                     margin-left:0.4rem;">
+                            📍 {{ us.user.location or 'No location' }}
+                        </span>
+                    </div>
+                    <span class="skill-offer">{{ us.level }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p style="color:var(--muted); font-size:0.9rem;">
+                Nobody offering yet.
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Users Wanting -->
+    <div class="card">
+        <h3 style="color:var(--orange); margin-bottom:1rem;">
+            🎯 Users Wanting
+        </h3>
+        {% if wanting %}
+            {% for us in wanting %}
+            <a href="{{ url_for('matching.user_detail', user_id=us.user.user_id) }}"
+               style="text-decoration:none;">
+                <div style="background:var(--surface2);
+                            border:1px solid var(--border);
+                            border-radius:8px; padding:0.7rem 1rem;
+                            margin-bottom:0.5rem; display:flex;
+                            justify-content:space-between; align-items:center;">
+                    <div>
+                        <b style="color:var(--text);">{{ us.user.name }}</b>
+                        <span style="color:var(--muted); font-size:0.8rem;
+                                     margin-left:0.4rem;">
+                            📍 {{ us.user.location or 'No location' }}
+                        </span>
+                    </div>
+                    <span class="skill-want">{{ us.level }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p style="color:var(--muted); font-size:0.9rem;">
+                Nobody wanting yet.
+            </p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

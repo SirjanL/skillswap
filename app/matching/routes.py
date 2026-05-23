@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app.matching import matching
 from app.models import User, UserSkill, Skill
@@ -81,8 +81,25 @@ def get_matches(current_user_id):
 @matching.route('/discover')
 @login_required
 def discover():
+    search = request.args.get('q', '').strip()
     matches = get_matches(current_user.user_id)
-    return render_template('matching/discover.html', matches=matches)
+
+    if search:
+        matches = [
+            m for m in matches
+            if search.lower() in m['user'].name.lower()
+            or search.lower() in m['user'].location.lower()
+            or any(search.lower() in s.skill_name.lower()
+                   for s in m['they_can_teach_me'])
+            or any(search.lower() in s.skill_name.lower()
+                   for s in m['i_can_teach_them'])
+        ]
+
+    return render_template(
+        'matching/discover.html',
+        matches=matches,
+        search=search
+    )
 
 
 # ── VIEW ANOTHER USER'S PROFILE ───────────────────────────
@@ -92,6 +109,7 @@ def user_detail(user_id):
     if user_id == current_user.user_id:
         return redirect(url_for('profile.view_profile'))
 
+    from app.models import Rating
     user = User.query.get_or_404(user_id)
 
     offered_skills = UserSkill.query.filter_by(
@@ -101,8 +119,13 @@ def user_detail(user_id):
         user_id=user_id, type='want'
     ).all()
 
-    # Check if there's a mutual match with current user
-    matches = get_matches(current_user.user_id)
+    all_ratings = Rating.query.filter_by(rated_user_id=user_id).all()
+    avg_rating  = (
+        round(sum(r.rating for r in all_ratings) / len(all_ratings), 1)
+        if all_ratings else None
+    )
+
+    matches    = get_matches(current_user.user_id)
     match_info = next(
         (m for m in matches if m['user'].user_id == user_id), None
     )
@@ -112,5 +135,7 @@ def user_detail(user_id):
         user=user,
         offered_skills=offered_skills,
         wanted_skills=wanted_skills,
-        match_info=match_info
+        match_info=match_info,
+        all_ratings=all_ratings,
+        avg_rating=avg_rating
     )

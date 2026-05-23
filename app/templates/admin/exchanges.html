@@ -1,0 +1,56 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}— Exchanges{% endblock %}
+{% block topbar_title %}Exchanges{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Exchanges</h1>
+    <p>{{ exchanges|length }} total exchanges on the platform</p>
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Participants</th>
+                <th>Skills</th>
+                <th>Started</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exchange in exchanges %}
+            <tr>
+                <td style="font-family:'IBM Plex Mono',monospace;
+                           color:#aaa; font-size:0.75rem;">
+                    #{{ exchange.exchange_id }}
+                </td>
+                <td>
+                    <b>{{ exchange.request.sender.name }}</b>
+                    <span style="color:#aaa; margin:0 0.3rem;">↔</span>
+                    <b>{{ exchange.request.receiver.name }}</b>
+                </td>
+                <td style="font-size:0.78rem;">
+                    <span style="color:#1a6b3c;">
+                        {{ exchange.request.offered_skill.skill_name }}
+                    </span>
+                    <span style="color:#aaa; margin:0 0.3rem;">↔</span>
+                    <span style="color:#8b5a1a;">
+                        {{ exchange.request.requested_skill.skill_name }}
+                    </span>
+                </td>
+                <td style="color:#6b6b6b; font-size:0.78rem;">
+                    {{ exchange.start_date.strftime('%b %d, %Y') }}
+                </td>
+                <td>
+                    <span class="badge badge-{{ exchange.status }}">
+                        {{ exchange.status }}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

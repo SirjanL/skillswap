@@ -1,0 +1,67 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}— Users{% endblock %}
+{% block topbar_title %}Users{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Users</h1>
+    <p>{{ users|length }} registered accounts on the platform</p>
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Location</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Account</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td style="font-family:'IBM Plex Mono',monospace;
+                           color:#aaa; font-size:0.75rem;">
+                    #{{ user.user_id }}
+                </td>
+                <td><b>{{ user.name }}</b></td>
+                <td style="color:#6b6b6b;">{{ user.email }}</td>
+                <td style="color:#6b6b6b;">{{ user.location or '—' }}</td>
+                <td>
+                    <span style="font-family:'IBM Plex Mono',monospace;
+                                 font-size:0.72rem; color:#6b6b6b;">
+                        {{ user.role }}
+                    </span>
+                </td>
+                <td style="color:#6b6b6b; font-size:0.78rem;">
+                    {{ user.created_at.strftime('%b %d, %Y') }}
+                </td>
+                <td>
+                    {% if user.is_active %}
+                        <span class="badge badge-active">Enabled</span>
+                    {% else %}
+                        <span class="badge badge-inactive">Disabled</span>
+                    {% endif %}
+                </td>
+                <td style="display:flex; gap:0.4rem;">
+                    <a href="{{ url_for('admin.toggle_user', user_id=user.user_id) }}"
+                       class="{% if user.is_active %}btn btn-danger{% else %}btn btn-success{% endif %}">
+                        {% if user.is_active %}Disable{% else %}Enable{% endif %}
+                    </a>
+                    <a href="{{ url_for('admin.delete_user', user_id=user.user_id) }}"
+                       class="btn btn-danger"
+                       onclick="return confirm('Permanently delete {{ user.name }}?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

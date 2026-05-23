@@ -1,0 +1,56 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}— Skills{% endblock %}
+{% block topbar_title %}Skills{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Skills</h1>
+    <p>{{ skills|length }} skills registered on the platform</p>
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Skill Name</th>
+                <th>Category</th>
+                <th>Offering</th>
+                <th>Wanting</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for skill in skills %}
+            <tr>
+                <td style="font-family:'IBM Plex Mono',monospace;
+                           color:#aaa; font-size:0.75rem;">
+                    #{{ skill.skill_id }}
+                </td>
+                <td><b>{{ skill.skill_name }}</b></td>
+                <td>
+                    <span style="background:#f0efe9; color:#6b6b6b;
+                                 padding:0.2rem 0.6rem; border-radius:4px;
+                                 font-size:0.75rem; font-family:'IBM Plex Mono',monospace;">
+                        {{ skill.category }}
+                    </span>
+                </td>
+                <td style="color:#1a6b3c; font-family:'IBM Plex Mono',monospace;">
+                    {{ skill.user_skills | selectattr('type','equalto','offer') | list | length }}
+                </td>
+                <td style="color:#8b5a1a; font-family:'IBM Plex Mono',monospace;">
+                    {{ skill.user_skills | selectattr('type','equalto','want') | list | length }}
+                </td>
+                <td>
+                    <a href="{{ url_for('admin.delete_skill', skill_id=skill.skill_id) }}"
+                       class="btn btn-danger"
+                       onclick="return confirm('Delete {{ skill.skill_name }}?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -12,12 +12,9 @@
         WELCOME BACK, {{ current_user.name.upper() }} 👋
     </div>
 
-    <h1 style="font-size:3rem; line-height:1.15; margin-bottom:1rem;
-               background:linear-gradient(135deg, var(--text) 0%, var(--muted) 100%);
-               -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+    <h1 style="font-size:3rem; line-height:1.15; margin-bottom:1rem; color:var(--text);">
         What will you<br>
-        <span style="background:linear-gradient(135deg,var(--accent),var(--accent2));
-                     -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+        <span style="color:var(--accent);">
             learn today?
         </span>
     </h1>
@@ -30,11 +27,15 @@
 
     <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
         <a href="{{ url_for('matching.discover') }}" class="btn btn-primary"
-           style="padding:0.75rem 1.75rem; font-size:1rem;">
+        style="padding:0.75rem 1.75rem; font-size:1rem;">
             🔍 Find a Match
         </a>
+        <a href="{{ url_for('skills.browse') }}" class="btn btn-ghost"
+        style="padding:0.75rem 1.75rem; font-size:1rem;">
+            🎯 Browse Skills
+        </a>
         <a href="{{ url_for('profile.manage_skills') }}" class="btn btn-ghost"
-           style="padding:0.75rem 1.75rem; font-size:1rem;">
+        style="padding:0.75rem 1.75rem; font-size:1rem;">
             + Add Skills
         </a>
     </div>

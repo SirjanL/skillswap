@@ -136,3 +136,26 @@ INSERT INTO skills (skill_name, description, category) VALUES
     ('Mathematics', 'High school and college math',   'Education'),
     ('Cooking',     'Basic to advanced cooking',      'Lifestyle')
 ON CONFLICT (skill_name) DO NOTHING;
+
+
+-- ── 9. ADMINS ─────────────────────────────────────────────
+-- Separate admin accounts independent of regular users
+CREATE TABLE IF NOT EXISTS admins (
+    admin_id   SERIAL PRIMARY KEY,
+    name       VARCHAR(100)        NOT NULL,
+    email      VARCHAR(120) UNIQUE NOT NULL,
+    password   VARCHAR(256)        NOT NULL,
+    created_at TIMESTAMP           DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- ── UPDATES TO EXISTING TABLES ────────────────────────────
+-- Allow offered_skill_id and requested_skill_id to be nullable
+-- (needed for skill deletion without breaking requests)
+ALTER TABLE requests ALTER COLUMN offered_skill_id DROP NOT NULL;
+ALTER TABLE requests ALTER COLUMN requested_skill_id DROP NOT NULL;
+
+
+-- ── ADDITIONAL INDEX ──────────────────────────────────────
+CREATE INDEX IF NOT EXISTS idx_exchanges_status ON exchanges(status);
+CREATE INDEX IF NOT EXISTS idx_requests_status  ON requests(status);

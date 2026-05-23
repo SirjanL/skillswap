@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillSwap {% block title %}{% endblock %}</title>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('skillswap-theme') || 'dark';
+            if (theme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
+        })();
+    </script>    
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -14,22 +26,47 @@
     <div class="nav-links">
         {% if current_user.is_authenticated %}
             <a href="{{ url_for('matching.discover') }}">Discover</a>
-            <a href="{{ url_for('requests_bp.inbox') }}">Inbox</a>
-            <a href="{{ url_for('requests_bp.exchanges') }}">Exchanges</a>
-            <a href="{{ url_for('messages.inbox') }}">Messages</a>
+            <a href="{{ url_for('skills.browse') }}">Skills</a>
+
+            <span class="nav-bell" id="nav-inbox">
+                <a href="{{ url_for('requests_bp.inbox') }}">Inbox</a>
+            </span>
+
+            <span class="nav-bell" id="nav-exchanges">
+                <a href="{{ url_for('requests_bp.exchanges') }}">Exchanges</a>
+            </span>
+
+            <span class="nav-bell" id="nav-messages">
+                <a href="{{ url_for('messages.inbox') }}">Messages</a>
+            </span>
+
             <span class="nav-bell">
                 <a href="{{ url_for('notifications.view_notifications') }}">Alerts</a>
                 {% if unread_count > 0 %}
                     <span class="badge">{{ unread_count }}</span>
                 {% endif %}
             </span>
-            <a href="{{ url_for('profile.view_profile') }}" style="color: var(--accent); font-weight:600;">
+
+            <a href="{{ url_for('profile.view_profile') }}"
+            style="color:var(--accent); font-weight:600;">
                 👤 {{ current_user.name }}
             </a>
-            <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost" style="margin-left:0.5rem;">Logout</a>
+            <!-- Theme Switcher -->
+            <div class="theme-switcher">
+                <button class="theme-btn" data-theme="light">☀️</button>
+                <button class="theme-btn" data-theme="dark">🌙</button>
+                <button class="theme-btn" data-theme="system">⚙️</button>
+            </div>            
+            <a href="{{ url_for('auth.logout') }}"
+            class="btn btn-ghost" style="margin-left:0.5rem;">Logout</a>
         {% else %}
             <a href="{{ url_for('auth.login') }}">Login</a>
-            <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="margin-left:0.5rem; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:white; font-weight:600;">Get Started →</a>        {% endif %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary" 
+            style="margin-left:0.5rem; background:#7c6aff; color:white; 
+                    font-weight:600; padding:0.5rem 1.25rem;">
+            Get Started →
+            </a>
+        {% endif %}
     </div>
 </nav>
 
@@ -47,5 +84,7 @@
 
     {% block content %}{% endblock %}
 </div>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+
 </body>
 </html>

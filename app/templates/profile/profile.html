@@ -15,7 +15,7 @@
             <div style="width:64px; height:64px; border-radius:50%;
                         background: linear-gradient(135deg, var(--accent), var(--accent2));
                         display:flex; align-items:center; justify-content:center;
-                        font-size:1.5rem; font-weight:800; font-family:'Syne',sans-serif;
+                        font-size:1.5rem; font-weight:800; font-family:'Serif',sans-serif;
                         flex-shrink:0;">
                 {{ user.name[0].upper() }}
             </div>
@@ -103,6 +103,61 @@
             </p>
         {% endif %}
     </div>
+    
+    <!-- Ratings Section -->
+    <div class="card" style="margin-top:1.25rem;">
+        <div style="display:flex; justify-content:space-between;
+                    align-items:center; margin-bottom:1rem;">
+            <h3 style="display:flex; align-items:center; gap:0.5rem;">
 
+    <!-- Ratings Section -->
+<div class="card" style="margin-top:1.25rem;">
+    <div style="display:flex; justify-content:space-between;
+                align-items:center; margin-bottom:1rem;">
+        <h3 style="display:flex; align-items:center; gap:0.5rem;">
+            <span style="background:rgba(255,170,61,0.1);
+                         padding:0.3rem 0.5rem; border-radius:6px;">⭐</span>
+            Ratings & Feedback
+        </h3>
+        {% if avg_rating %}
+        <div style="background:rgba(255,170,61,0.1); border:1px solid rgba(255,170,61,0.25);
+                    padding:0.4rem 1rem; border-radius:20px;">
+            <span style="color:var(--orange); font-weight:700;
+                         font-size:1.1rem;">{{ avg_rating }}</span>
+            <span style="color:var(--muted); font-size:0.85rem;"> / 5</span>
+            <span style="color:var(--muted); font-size:0.8rem; margin-left:0.3rem;">
+                ({{ all_ratings|length }} review{{ 's' if all_ratings|length != 1 }})
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if all_ratings %}
+        {% for r in all_ratings %}
+        <div style="border-bottom:1px solid var(--border); padding:1rem 0;">
+            <div style="margin-bottom:0.4rem;">
+                {% for i in range(r.rating) %}
+                    <span style="color:var(--orange);">★</span>
+                {% endfor %}
+                {% for i in range(5 - r.rating) %}
+                    <span style="color:var(--border);">★</span>
+                {% endfor %}
+            </div>
+            {% if r.feedback %}
+            <p style="color:#c0c4d8; font-size:0.9rem;
+                      margin-bottom:0.4rem;">{{ r.feedback }}</p>
+            {% endif %}
+            <p style="color:var(--muted); font-size:0.78rem;">
+                by {{ r.rater.name }}
+            </p>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color:var(--muted); text-align:center; padding:1.5rem 0;">
+            No ratings yet.
+        </p>
+    {% endif %}
+
+</div>
 </div>
 {% endblock %}

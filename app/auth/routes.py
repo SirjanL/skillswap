@@ -23,6 +23,16 @@ def register():
         if not name or not email or not password:
             flash('All fields are required.', 'error')
             return redirect(url_for('auth.register'))
+        
+        location = request.form.get('location', '').strip()
+
+        if not name or not email or not password:
+            flash('All fields are required.', 'error')
+            return redirect(url_for('auth.register'))
+
+        if not location:
+            flash('Location is required.', 'error')
+            return redirect(url_for('auth.register'))        
 
         if password != confirm_password:
             flash('Passwords do not match.', 'error')
@@ -39,7 +49,7 @@ def register():
 
         # Create user
         hashed_password = generate_password_hash(password)
-        new_user = User(name=name, email=email, password=hashed_password)
+        new_user = User(name=name, email=email, password=hashed_password, location=location)
         db.session.add(new_user)
         db.session.commit()
 

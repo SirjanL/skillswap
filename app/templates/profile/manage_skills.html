@@ -16,7 +16,12 @@
             </div>
             <div>
                 <label>Category</label>
-                <input type="text" name="category" placeholder="e.g. Programming, Music, Arts">
+                <select name="category" required>
+                    <option value="">— Select a category —</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
 
@@ -53,9 +58,13 @@
                         <b style="color:var(--text);">{{ us.skill.skill_name }}</b>
                         <span style="color:var(--muted); font-size:0.85rem;"> — {{ us.level }}</span>
                     </div>
-                    <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
-                    style="color:var(--accent2); font-size:0.85rem;"
-                    onclick="return confirm('Remove this skill?')">Remove</a>
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                            <a href="{{ url_for('profile.edit_skill', user_skill_id=us.id) }}"
+                            style="color:var(--accent); font-size:0.85rem;">Edit</a>
+                            <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
+                            style="color:var(--accent2); font-size:0.85rem;"
+                            onclick="return confirm('Remove this skill?')">Remove</a>
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}
@@ -72,9 +81,13 @@
                         <b style="color:var(--text);">{{ us.skill.skill_name }}</b>
                         <span style="color:var(--muted); font-size:0.85rem;"> — {{ us.level }}</span>
                     </div>
-                    <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
-                    style="color:var(--accent2); font-size:0.85rem;"
-                    onclick="return confirm('Remove this skill?')">Remove</a>
+                    <div style="display:flex; gap:0.75rem; align-items:center;">
+                            <a href="{{ url_for('profile.edit_skill', user_skill_id=us.id) }}"
+                            style="color:var(--accent); font-size:0.85rem;">Edit</a>
+                            <a href="{{ url_for('profile.delete_skill', user_skill_id=us.id) }}"
+                            style="color:var(--accent2); font-size:0.85rem;"
+                            onclick="return confirm('Remove this skill?')">Remove</a>
+                    </div>
                 </div>
                 {% endfor %}
             {% else %}

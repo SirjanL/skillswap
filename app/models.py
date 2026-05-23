@@ -73,8 +73,8 @@ class Request(db.Model):
     request_id        = db.Column(db.Integer, primary_key=True)
     sender_id         = db.Column(db.Integer, db.ForeignKey('users.user_id'),  nullable=False)
     receiver_id       = db.Column(db.Integer, db.ForeignKey('users.user_id'),  nullable=False)
-    offered_skill_id  = db.Column(db.Integer, db.ForeignKey('skills.skill_id'), nullable=False)
-    requested_skill_id= db.Column(db.Integer, db.ForeignKey('skills.skill_id'), nullable=False)
+    offered_skill_id   = db.Column(db.Integer, db.ForeignKey('skills.skill_id'), nullable=True)
+    requested_skill_id = db.Column(db.Integer, db.ForeignKey('skills.skill_id'), nullable=True)
     message           = db.Column(db.Text, default='')
     status            = db.Column(db.String(20), default='pending')  # pending / accepted / rejected
     created_at        = db.Column(db.DateTime, default=datetime.utcnow)
@@ -154,3 +154,15 @@ class Message(db.Model):
     def __repr__(self):
         return f'<Message {self.message_id}>'
     
+# ── 9. ADMIN ──────────────────────────────────────────────
+class Admin(db.Model):
+    __tablename__ = 'admins'
+
+    admin_id   = db.Column(db.Integer, primary_key=True)
+    name       = db.Column(db.String(100), nullable=False)
+    email      = db.Column(db.String(120), unique=True, nullable=False)
+    password   = db.Column(db.String(256), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Admin {self.name}>'
