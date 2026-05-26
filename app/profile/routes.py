@@ -58,35 +58,16 @@ def edit_profile():
     return render_template('profile/edit_profile.html', user=current_user)
 
 
-SKILL_CATEGORIES = {
-    'Tech & Development': [
-        'Programming', 'Web Development', 'Mobile Development', 
-        'Cloud Computing', 'DevOps', 'Database', 'Cybersecurity'
-    ],
-    'Data & AI': [
-        'Data Science', 'Machine Learning', 'Artificial Intelligence'
-    ],
-    'Design & Visual Arts': [
-        'UI/UX Design', 'Graphic Design', 'Video Editing', 'Photography', 
-        'Animation', '3D Modeling', 'Drawing', 'Painting', 'Sculpting', 'Calligraphy'
-    ],
-    'Music & Audio': [
-        'Music Production', 'Guitar', 'Piano', 'Drums', 'Singing', 'Music Theory'
-    ],
-    'Writing & Languages': [
-        'Creative Writing', 'Blogging', 'Copywriting', 'Translation', 
-        'English', 'Nepali', 'Hindi', 'French', 'Spanish', 'Japanese', 'Chinese'
-    ],
-    'Academics & Sciences': [
-        'Mathematics', 'Physics', 'Chemistry', 'Biology', 'History', 'Geography'
-    ],
-    'Lifestyle & Wellness': [
-        'Cooking', 'Baking', 'Fitness', 'Yoga', 'Meditation'
-    ],
-    'Business & Professional': [
-        'Public Speaking', 'Leadership', 'Finance', 'Accounting'
-    ]
-}
+SKILL_CATEGORIES = [
+    'Tech & Development',
+    'Data & AI',
+    'Design & Visual Arts',
+    'Music & Audio',
+    'Writing & Languages',
+    'Academics & Sciences',
+    'Lifestyle & Wellness',
+    'Business & Professional'
+]
 
 
 @profile.route('/profile/skills', methods=['GET', 'POST'])
@@ -240,35 +221,67 @@ def edit_skill(user_skill_id):
         return redirect(url_for('profile.manage_skills'))
 
     if request.method == 'POST':
-        new_level = request.form.get('level')
-        new_type  = request.form.get('skill_type')
+        new_level     = request.form.get('level')
+        new_type      = request.form.get('skill_type')
+        new_skill_name = request.form.get('skill_name').strip().title()
+        new_category   = request.form.get('category').strip()
+
+        if not new_skill_name or not new_category:
+            flash('Skill name and category are required.', 'error')
+            return redirect(url_for('profile.edit_skill', user_skill_id=user_skill_id))
 
         if new_type not in ['offer', 'want']:
             flash('Invalid skill type.', 'error')
             return redirect(url_for('profile.edit_skill', user_skill_id=user_skill_id))
 
-        # Check for duplicate if type is being changed
+        if new_category not in SKILL_CATEGORIES:
+            flash('Please select a valid category.', 'error')
+            return redirect(url_for('profile.edit_skill', user_skill_id=user_skill_id))
+
+        # Check if skill name changed
+        if new_skill_name != user_skill.skill.skill_name:
+            # Find or create the new skill
+            new_skill = Skill.query.filter_by(skill_name=new_skill_name).first()
+            if not new_skill:
+                new_skill = Skill(skill_name=new_skill_name, category=new_category)
+                db.session.add(new_skill)
+                db.session.flush()
+
+            # Check for duplicate
+            existing = UserSkill.query.filter_by(
+                user_id=current_user.user_id,
+                skill_id=new_skill.skill_id,
+                type=new_type
+            ).first()
+            if existing and existing.id != user_skill_id:
+                flash(f'You already have "{new_skill_name}" as a {new_type} skill.', 'error')
+                return redirect(url_for('profile.edit_skill', user_skill_id=user_skill_id))
+
+            user_skill.skill_id = new_skill.skill_id
+        else:
+            # Update category if only category changed
+            user_skill.skill.category = new_category
+
+        # Check for duplicate type change
         if new_type != user_skill.type:
             existing = UserSkill.query.filter_by(
                 user_id=current_user.user_id,
                 skill_id=user_skill.skill_id,
                 type=new_type
             ).first()
-            if existing:
-                flash(
-                    f'You already have '
-                    f'"{user_skill.skill.skill_name}" as a '
-                    f'{new_type} skill.', 'error'
-                )
-                return redirect(
-                    url_for('profile.edit_skill', user_skill_id=user_skill_id)
-                )
+            if existing and existing.id != user_skill_id:
+                flash(f'You already have this skill as a {new_type} skill.', 'error')
+                return redirect(url_for('profile.edit_skill', user_skill_id=user_skill_id))
 
         user_skill.level = new_level
         user_skill.type  = new_type
         db.session.commit()
 
-        flash(f'"{user_skill.skill.skill_name}" updated successfully!', 'success')
+        flash(f'Skill updated successfully!', 'success')
         return redirect(url_for('profile.manage_skills'))
 
-    return render_template('profile/edit_skill.html', user_skill=user_skill)
+    return render_template(
+        'profile/edit_skill.html',
+        user_skill=user_skill,
+        categories=SKILL_CATEGORIES
+    )

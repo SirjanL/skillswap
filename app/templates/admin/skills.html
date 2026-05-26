@@ -41,10 +41,14 @@
                 <td style="color:#8b5a1a; font-family:'IBM Plex Mono',monospace;">
                     {{ skill.user_skills | selectattr('type','equalto','want') | list | length }}
                 </td>
-                <td>
+                <td style="display:flex; gap:0.4rem;">
+                    <a href="{{ url_for('admin.edit_skill', skill_id=skill.skill_id) }}"
+                    class="btn btn-success">
+                        Edit
+                    </a>
                     <a href="{{ url_for('admin.delete_skill', skill_id=skill.skill_id) }}"
-                       class="btn btn-danger"
-                       onclick="return confirm('Delete {{ skill.skill_name }}?')">
+                    class="btn btn-danger"
+                    onclick="return confirm('Delete {{ skill.skill_name }}?')">
                         Delete
                     </a>
                 </td>

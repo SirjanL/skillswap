@@ -130,12 +130,18 @@ def poll_messages(exchange_id):
         'is_mine':   m.sender_id == current_user.user_id
     } for m in all_messages])
 
-messages.route('/messages/poll/unread')
+@messages.route('/messages/poll/unread')
 @login_required
 def poll_unread_messages():
     unread = Message.query.filter_by(
         receiver_id=current_user.user_id,
         is_read=False
-    ).count()
+    ).order_by(Message.timestamp.desc()).all()
 
-    return jsonify({'unread_count': unread})
+    latest = unread[0] if unread else None
+
+    return jsonify({
+        'unread_count': len(unread),
+        'latest_id':      latest.message_id if latest else None,
+        'latest_preview': f'{latest.sender.name}: {latest.content[:40]}{"..." if len(latest.content) > 40 else ""}' if latest else None
+    })

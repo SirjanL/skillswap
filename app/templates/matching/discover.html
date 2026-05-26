@@ -11,7 +11,7 @@
                     style="flex:1; margin-bottom:0;">
                 <button type="submit" class="btn btn-primary"
                         style="margin-bottom:0; white-space:nowrap;">
-                    🔍 Search
+                    Search
                 </button>
                 {% if search %}
                 <a href="{{ url_for('matching.discover') }}"
@@ -44,12 +44,12 @@
             <div>
                 <h3>
                     <a href="{{ url_for('matching.user_detail', user_id=match.user.user_id) }}"
-                       style="color:#2c3e50; text-decoration:none;">
+                    style="color:var(--text); text-decoration:none;">
                         {{ match.user.name }}
                     </a>
                 </h3>
                 <p style="color:#777; font-size:0.9rem;">
-                    📍 {{ match.user.location or 'Location not set' }}
+                    {{ match.user.location or 'Location not set' }}
                 </p>
                 <p style="font-size:0.9rem; margin-top:0.4rem;">
                     {{ match.user.bio or 'No bio yet.' }}

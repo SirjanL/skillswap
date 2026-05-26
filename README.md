@@ -8,7 +8,7 @@ Under the guidance of **Mr. Trailokya Ojha**
 
 ---
 
-## 📌 Overview
+## Overview
 
 SkillSwap is a community-driven skill exchange platform built with Python (Flask) and PostgreSQL. Instead of paying for courses or tutors, users can trade their own skills with others — teach what you know, learn what you don't.
 
@@ -16,7 +16,7 @@ A developer can teach Python to a guitarist, who teaches guitar in return. No mo
 
 ---
 
-## ✨ Features
+## Features
 
 - **User Authentication** — Register, login, logout with hashed passwords
 - **Profile Management** — Bio, location, and personal skill listings
@@ -44,7 +44,7 @@ A developer can teach Python to a guitarist, who teaches guitar in return. No mo
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 skillswap/
@@ -68,7 +68,7 @@ skillswap/
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 The system uses 8 relational tables:
 
@@ -87,7 +87,7 @@ Full schema with constraints and indexes: [`skillswap_db.sql`](./skillswap_db.sq
 
 ---
 
-## ⚙️ How the Matching Engine Works
+## How the Matching Engine Works
 
 1. Fetch current user's **offered** skill IDs and **wanted** skill IDs
 2. For every other active user, find:
@@ -98,7 +98,7 @@ Full schema with constraints and indexes: [`skillswap_db.sql`](./skillswap_db.sq
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.x
@@ -152,7 +152,7 @@ Visit `http://127.0.0.1:5000` in your browser.
 
 ---
 
-## 📋 Requirements
+## Requirements
 
 ```
 Flask
@@ -169,20 +169,20 @@ pip install -r requirements.txt
 
 ---
 
-## 🔮 Future Scope
+## Future Scope
 
-- 📱 Native Android and iOS mobile apps
-- 💬 Real-time chat using WebSockets (Flask-SocketIO)
-- 🤖 AI-based skill recommendations using machine learning
-- 🎥 Video/audio sessions via WebRTC or Zoom API
-- 🏆 Gamification — badges, points, and leaderboards
-- ✅ Skill verification and certification system
-- 🌐 Multi-language support (Nepali, Hindi)
-- 💬 Community forums and Q&A boards
+- Native Android and iOS mobile apps
+- Real-time chat using WebSockets (Flask-SocketIO)
+- AI-based skill recommendations using machine learning
+- Video/audio sessions via WebRTC or Zoom API
+- Gamification — badges, points, and leaderboards
+- Skill verification and certification system
+- Multi-language support (Nepali, Hindi)
+- Community forums and Q&A boards
 
 ---
 
-## 📚 References
+## References
 
 - [Python 3 Documentation](https://docs.python.org/3/)
 - [Flask Documentation](https://flask.palletsprojects.com/)
@@ -193,6 +193,6 @@ pip install -r requirements.txt
 
 ---
 
-## 📄 License
+## License
 
 This project was developed for academic purposes as part of BCSP-064 (BCA Project) at Indira Gandhi National Open University (IGNOU).

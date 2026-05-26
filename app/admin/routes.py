@@ -227,3 +227,36 @@ def exchanges():
         Exchange.start_date.desc()
     ).all()
     return render_template('admin/exchanges.html', exchanges=all_exchanges)
+
+
+@admin.route('/skills/edit/<int:skill_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_skill(skill_id):
+    skill = Skill.query.get_or_404(skill_id)
+
+    if request.method == 'POST':
+        skill_name = request.form.get('skill_name').strip().title()
+        category   = request.form.get('category').strip()
+
+        if not skill_name or not category:
+            flash('All fields are required.', 'error')
+            return redirect(url_for('admin.edit_skill', skill_id=skill_id))
+
+        # Check for duplicate name
+        existing = Skill.query.filter(
+            Skill.skill_name == skill_name,
+            Skill.skill_id != skill_id
+        ).first()
+
+        if existing:
+            flash(f'Skill "{skill_name}" already exists.', 'error')
+            return redirect(url_for('admin.edit_skill', skill_id=skill_id))
+
+        skill.skill_name = skill_name
+        skill.category   = category
+        db.session.commit()
+
+        flash(f'Skill updated successfully.', 'success')
+        return redirect(url_for('admin.skills'))
+
+    return render_template('admin/edit_skill.html', skill=skill)

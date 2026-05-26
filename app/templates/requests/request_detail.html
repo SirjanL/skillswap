@@ -27,9 +27,10 @@
     </div>
 
     {% if req.message %}
-    <div style="background:#f9f9f9; padding:1rem; border-radius:8px; margin-bottom:1rem;">
-        <b>Message:</b>
-        <p style="margin-top:0.4rem;">{{ req.message }}</p>
+    <div style="background:var(--surface2); border:1px solid var(--border);
+                padding:1rem; border-radius:8px; margin-bottom:1rem;">
+        <b style="color:var(--text);">Message:</b>
+        <p style="margin-top:0.4rem; color:var(--text);">{{ req.message }}</p>
     </div>
     {% endif %}
 

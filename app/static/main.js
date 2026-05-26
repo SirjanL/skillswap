@@ -22,21 +22,19 @@ function updateThemeButtons(theme) {
 const savedTheme = localStorage.getItem('skillswap-theme') || 'dark';
 applyTheme(savedTheme);
 
+document.addEventListener('DOMContentLoaded', () => {
+    updateThemeButtons(savedTheme);
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => setTheme(btn.dataset.theme));
+    });
+});
+
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (localStorage.getItem('skillswap-theme') === 'system') {
         applyTheme('system');
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateThemeButtons(savedTheme);
-
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.addEventListener('click', () => setTheme(btn.dataset.theme));
-    });
-});
-
-// Auto-dismiss flash messages after 4 seconds
 setTimeout(() => {
     document.querySelectorAll('.alert').forEach(a => {
         a.style.transition = 'opacity 0.5s';
@@ -190,6 +188,23 @@ function pollNotifications() {
         .catch(err => console.error('Notification poll error:', err));
 }
 
+let lastMessageId = null;
+
+function pollNewMessages() {
+    fetch('/messages/poll/unread')
+        .then(res => res.json())
+        .then(data => {
+            if (data.unread_count > 0 && data.latest_id && data.latest_id !== lastMessageId) {
+                lastMessageId = data.latest_id;
+                showToast({
+                    type: 'message',
+                    message: data.latest_preview
+                });
+            }
+        })
+        .catch(err => console.error('Message poll error:', err));
+}
+
 let lastNotifId = null;
 
 function showToast(notification) {
@@ -199,7 +214,8 @@ function showToast(notification) {
     const icon =
         notification.type === 'new_request' ? '📨' :
         notification.type === 'accepted'    ? '✅' :
-        notification.type === 'rejected'    ? '❌' : '🔔';
+        notification.type === 'rejected'    ? '❌' :
+        notification.type === 'message'     ? '💬' : '🔔';
 
     const toast = document.createElement('div');
     toast.id = 'notif-toast';
@@ -228,7 +244,7 @@ function showToast(notification) {
         <div>
             <div style="font-weight:600; color:#eef0f8;
                         font-size:0.875rem; margin-bottom:0.2rem;">
-                New Notification
+                ${notification.type === 'message' ? 'New Message' : 'New Notification'}
             </div>
             <div style="color:#7b809a; font-size:0.82rem; line-height:1.4;">
                 ${notification.message}
@@ -253,4 +269,12 @@ function showToast(notification) {
 }
 
 pollNotifications();
-setInterval(pollNotifications, 5000);
+setInterval(() => {
+    pollInbox();
+    pollExchanges();
+    pollUnreadMessages();
+    pollNotifications();
+    pollNewMessages();
+}, 5000);
+
+pollNewMessages();
