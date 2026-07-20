@@ -1,4 +1,4 @@
-# 🔄 SkillSwap — A Local Skill Exchange Platform
+# SkillSwap — A Local Skill Exchange Platform
 
 > A web-based platform where people share and acquire skills without monetary transactions.
 
